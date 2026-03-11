@@ -19,8 +19,10 @@
 ### 2. Ángulos de Venta (Ángulo Maestro: Autorrealización)
 - **Ángulo 1 (El Reflejo):** "Tu carro dice mucho de vos. Aseguráte de que solo diga cosas buenas."
 - **Ángulo 2 (Rejuvenecimiento):** "Recuperá la transparencia de cuando lo sacaste de la agencia — en 5 minutos."
-- **Promesa:** Visibilidad de cristales líquidos y estética impecable.
-- **Tono:** Respetuoso, masculino, con autoridad.
+- **Ángulo 3 (Hágalo Usted Mismo):** "Nadie cuida lo suyo mejor que usted mismo." (Orgullo de competencia).
+- **Ángulo 4 (El Conocedor):** "Usted sabe que el agua y el jabón no bastan. Tecnología real para problemas reales." (Autoridad técnica).
+- **Promesa:** Visibilidad de cristales líquidos y la satisfacción de usar tecnología que sí funciona.
+- **Tono:** Respetuoso, masculino, con autoridad técnica.
 
 ---
 

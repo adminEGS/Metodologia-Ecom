@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>OilShield™ Guatemala — La Ciencia de la Visibilidad | Edición Don Carlos</title>
+    <meta name="description"
+        content="Para el que sabe de carros: OilShield™ elimina el aceite industrial que el jabón común no puede tocar.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B1C1C;
+            /* Granate Metálico */
+            --primary-dark: #5e1313;
+            --secondary: #1a1a1a;
+            --accent: #f39c12;
+            /* Oro Industrial */
+            --text-dark: #111;
+            --text-light: #444;
+            --bg-light: #f4f4f4;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: var(--secondary);
+            color: var(--white);
+            text-align: center;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        /* HERO */
+        .hero {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e9e9e9 100%);
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.8rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .hero-content h1 span {
+            color: var(--primary);
+            display: block;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+        }
+
+        .price-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        .price-new {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--secondary);
+            display: block;
+        }
+
+        .price-tag {
+            background: var(--accent);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 22px 40px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background: var(--primary-dark);
+        }
+
+        .cta-sub {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        .hero-img {
+            position: relative;
+            text-align: center;
+        }
+
+        .hero-img img {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-badge {
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border: 4px solid var(--accent);
+        }
+
+        /* PROBLEM SECTION (THE SCIENCE) */
+        .science {
+            padding: 80px 0;
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .section-tag {
+            color: var(--accent);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .science-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .science-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .science-content p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .science-list {
+            list-style: none;
+        }
+
+        .science-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .sci-icon {
+            background: var(--accent);
+            color: var(--secondary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        /* COMPARISON */
+        .comparison {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comp-table th {
+            padding: 25px;
+            background: #eee;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .comp-table th.highlight {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .comp-table td {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .comp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comp-check {
+            color: #27ae60;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .comp-cross {
+            color: #c0392b;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        /* FEATURES GRID */
+        .features {
+            padding: 80px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            background: var(--white);
+            border: 1px solid #eee;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .feat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h4 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* TESTIMONIALS (CONOCEDORES) */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-text {
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .test-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .test-user img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            object-fit: cover;
+        }
+
+        .test-info h5 {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .test-info span {
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+
+        /* OFFERS */
+        .offers {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .offer-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .offer-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .offer-badge {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 10px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .offer-body {
+            padding: 30px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .offer-title {
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .offer-price {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .offer-price span {
+            font-size: 1rem;
+            color: #999;
+            text-decoration: line-through;
+            display: block;
+            font-weight: 400;
+        }
+
+        .offer-list {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .offer-list li {
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .offer-list li::before {
+            content: "✓";
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 40px 0;
+            background: #000;
+            color: #666;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) {
+
+            .hero-grid,
+            .science-grid,
+            .features-grid,
+            .test-grid,
+            .offer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-img {
+                order: -1;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .comparison {
+                overflow-x: auto;
+            }
+
+            .comp-table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">🚚 ENVÍO GRATIS A TODA GUATEMALA — PAGAR AL RECIBIR</div>
+
+    <header>
+        <div class="logo">OIL<span>SHIELD™</span></div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <h1><span>Edición para Conocedores</span>Usted sabe que el agua y el jabón no bastan</h1>
+                <p>No pierda el tiempo con métodos caseros que solo mueven la grasa. OilShield™ utiliza tecnología
+                    nano-molecular para quebrar la película de aceite industrial en segundos.</p>
+
+                <div class="price-box">
+                    <span class="price-old">Q350</span>
+                    <span class="price-new">Q249 <span class="price-tag">OFERTA GT</span></span>
+                </div>
+
+                <a href="#ofertas" class="cta-button">
+                    ADQUIRIR MI KIT PROFESIONAL
+                    <span class="cta-sub">Pago contra entrega en todo el país</span>
+                </a>
+            </div>
+
+            <div class="hero-img">
+                <div class="floating-badge">TECNOLOGÍA<br>NANO<br>VALIDADA</div>
+                <!-- Aquí iría la imagen del producto con un estilo serio y profesional -->
+                <div
+                    style="width:100%; aspect-ratio:1; background:#ccc; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:5rem;">
+                    🛡️</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="science">
+        <div class="container">
+            <span class="section-tag">Análisis Técnico</span>
+            <h2 class="section-title">¿Por qué el "detallado" convencional falla?</h2>
+
+            <div class="science-grid">
+                <div
+                    style="width:100%; aspect-ratio:1.2; background:#333; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:6rem;">
+                    🔬</div>
+                <div class="science-content">
+                    <h3>La Física de la Grasa Industrial</h3>
+                    <p>El aceite que se acumula en el parabrisas no es suciedad común. Son polímeros derivados de la
+                        combustión y el asfalto que crean una tensión superficial impenetrable para los detergentes
+                        ácidos o básicos.</p>
+                    <ul class="science-list">
+                        <li>
+                            <div class="sci-icon">1</div>
+                            <div><strong>Microporos del Vidrio:</strong> La grasa se aloja en las imperfecciones
+                                microscópicas del cristal. El jabón solo pasa por encima.</div>
+                        </li>
+                        <li>
+                            <div class="sci-icon">2</div>
+                            <div><strong>Surfactantes Selectivos:</strong> Nuestra fórmula penetra mecánicamente los
+                                poros, levantando la molécula de aceite desde la base.</div>
+                        </li>
+                        <li>
+                            <div class="sci-icon">3</div>
+                            <div><strong>Capa de Sacrificio:</strong> Deja un residuo invisible que evita la
+                                re-adherencia por hasta 45 días.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <h2 class="section-title">Resultados vs. Métodos caseros</h2>
+            <table class="comp-table">
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Jabón / Desengrasante</th>
+                        <th class="highlight">OilShield™ Nano</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Eliminación de Aceite Molecular</td>
+                        <td><span class="comp-cross">✗</span></td>
+                        <td><span class="comp-check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Visión HD Bajo Lluvia</td>
+                        <td>Temporal</td>
+                        <td>Semanas</td>
+                    </tr>
+                    <tr>
+                        <td>Daño a los hules/seguridad</td>
+                        <td>Alto (reseca)</td>
+                        <td>Neutro (protege)</td>
+                    </tr>
+                    <tr>
+                        <td>Esfuerzo Manual</td>
+                        <td>Extenuante</td>
+                        <td>Mínimo (5 min)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feat-icon">⚙️</span>
+                    <h4>Fórmula Industrial</h4>
+                    <p>Diseñada originalmente para mantenimiento de flotas de transporte pesado, adaptada para su
+                        vehículo.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feat-icon">⏱️</span>
+                    <h4>Eficiencia Real</h4>
+                    <p>Usted tiene mejores cosas que hacer que estar 1 hora tallando un vidrio. Resultado nítido en 3
+                        minutos.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feat-icon">💎</span>
+                    <h4>Preservación</h4>
+                    <p>Evita que los limpiaparabrisas (plumillas) se degraden por la fricción contra la grasa pegajosa.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <span class="section-tag">Voces de Expertos</span>
+            <h2 class="section-title">Hombres que saben lo que tienen</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <p class="test-text">"He restaurado carros por 20 años y nunca había visto algo que desprendiera la
+                        mancha de aceite así de fácil. Es química pura, no cuentos."</p>
+                    <div class="test-user">
+                        <div style="width:40px;height:40px;background:var(--accent);border-radius:50%;"></div>
+                        <div class="test-info">
+                            <h5>Ricardo M.</h5>
+                            <span>Restaurador Clásicos GT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <p class="test-text">"El domingo es mi día de cuidar mi pickup. OilShield™ me ahorra ir al lavadero
+                        donde solo me quitan el pisto y dejan el vidrio igual."</p>
+                    <div class="test-user">
+                        <div style="width:40px;height:40px;background:var(--accent);border-radius:50%;"></div>
+                        <div class="test-info">
+                            <h5>Don Carlos S.</h5>
+                            <span>Dueño de Transporte</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <p class="test-text">"La visibilidad nocturna cambió del cielo a la tierra. Para los que manejamos
+                        de noche, esto es una herramienta básica de seguridad."</p>
+                    <div class="test-user">
+                        <div style="width:40px;height:40px;background:var(--accent);border-radius:50%;"></div>
+                        <div class="test-info">
+                            <h5>Ing. Fernando H.</h5>
+                            <span>Viajero Frecuente</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="offers" id="ofertas">
+        <div class="container">
+            <h2 class="section-title">Seleccione su Kit de Mantenimiento</h2>
+            <div class="offer-grid">
+                <!-- Kit Básico -->
+                <div class="offer-card">
+                    <div class="offer-body">
+                        <div class="offer-title">Kit de Prueba</div>
+                        <div class="offer-price">Q249<span>Q350</span></div>
+                        <ul class="offer-list">
+                            <li>1 Frasco OilShield™ (300ml)</li>
+                            <li>1 Aplicador de Micro-celda</li>
+                            <li>Envío Gratis a todo GT</li>
+                        </ul>
+                        <a href="#" class="cta-button" style="padding:15px; font-size:0.8rem;">ELEGIR ESTE</a>
+                    </div>
+                </div>
+
+                <!-- Kit Recomendado -->
+                <div class="offer-card featured">
+                    <div class="offer-badge">¡LO QUE EL CONOCEDOR ELIGE!</div>
+                    <div class="offer-body">
+                        <div class="offer-title">Kit Profesional (Dúo)</div>
+                        <div class="offer-price">Q399<span>Q700</span></div>
+                        <ul class="offer-list">
+                            <li><strong>2 Frascos</strong> OilShield™</li>
+                            <li>2 Aplicadores Pro</li>
+                            <li><strong>Gratis:</strong> Microfibra High-Density</li>
+                            <li><strong>Ahorro:</strong> Q301 en total</li>
+                        </ul>
+                        <a href="#" class="cta-button" style="padding:15px; font-size:0.9rem;">ADQUIRIR KIT
+                            PROFESIONAL</a>
+                    </div>
+                </div>
+
+                <!-- Kit Maestro -->
+                <div class="offer-card">
+                    <div class="offer-body">
+                        <div class="offer-title">Kit Maestro (Flota)</div>
+                        <div class="offer-price">Q499<span>Q1,050</span></div>
+                        <ul class="offer-list">
+                            <li><strong>3 Frascos</strong> OilShield™</li>
+                            <li>Kit Completo de Limpieza</li>
+                            <li>Ideal para familias con 3+ carros</li>
+                            <li>Máximo valor por su pisto</li>
+                        </ul>
+                        <a href="#" class="cta-button" style="padding:15px; font-size:0.8rem;">ELEGIR ESTE</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>OilShield™ Guatemala — Tecnología Nano-Molecular aplicada al automovilismo profesional. @adminegs</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
