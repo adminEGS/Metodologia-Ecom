@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitecto Avatar — OilShield™ Guatemala</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0;
+    user-select:text!important; -webkit-user-select:text!important; }
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #f5f3f0;
+  --white: #ffffff;
+  --dark: #1a1a1a;
+  --granate: #7a1f1f;
+  --granate-light: #9b3333;
+  --gold: #d4a03c;
+  --gold-light: #f0d080;
+  --text: #333333;
+  --text-light: #666666;
+  --green: #2d8a4e;
+  --blue: #2563eb;
+  --orange: #e67e22;
+  --purple: #7c3aed;
+  --border: #e0dcd7;
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  --radius: 16px;
+}
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+.container { max-width:1100px; margin:0 auto; padding:0 24px; }
+
+/* ── HEADER ── */
+.header { background:var(--white); border-bottom:3px solid var(--granate); padding:16px 0; }
+.header-inner { display:flex; justify-content:space-between; align-items:center; }
+.header h1 { font-family:'Montserrat',sans-serif; font-size:1.5rem; font-weight:900;
+             letter-spacing:2px; color:var(--dark); }
+.header span { font-size:.9rem; color:var(--granate); font-weight:600; }
+
+/* ── TOP BAR ── */
+.top-bar { background:var(--granate); color:#fff; text-align:center; padding:14px 0;
+           font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:4px;
+           text-transform:uppercase; font-size:1rem; }
+
+/* ── SECTION generic ── */
+section { padding:48px 0; }
+section:nth-child(even) { background:var(--white); }
+.section-title { font-family:'Montserrat',sans-serif; font-weight:800;
+                 font-size:1.8rem; color:var(--dark); text-align:center;
+                 margin-bottom:12px; }
+.section-sub { text-align:center; color:var(--text-light); font-size:1.05rem;
+               max-width:700px; margin:0 auto 40px; }
+
+/* ── RESUMEN EJECUTIVO ── */
+.exec-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+             gap:20px; margin-bottom:40px; }
+.exec-card { background:var(--white); border-radius:var(--radius); padding:28px;
+             box-shadow:var(--shadow); border-top:4px solid var(--granate);
+             text-align:center; }
+.exec-card .number { font-family:'Montserrat',sans-serif; font-size:2.5rem;
+                     font-weight:900; color:var(--granate); }
+.exec-card .label { font-size:.85rem; color:var(--text-light); margin-top:4px;
+                    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+/* ── AVATAR CARD ── */
+.avatar-section { margin-bottom:56px; }
+.avatar-header { display:flex; align-items:center; gap:20px; margin-bottom:28px;
+                 padding:24px 32px; border-radius:var(--radius);
+                 color:#fff; position:relative; overflow:hidden; }
+.avatar-header::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+                         background:linear-gradient(135deg,rgba(0,0,0,.15),transparent); }
+.avatar-header * { position:relative; z-index:1; }
+.avatar-header .emoji { font-size:3rem; }
+.avatar-header h3 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.4rem; }
+.avatar-header .quote { font-style:italic; opacity:.9; margin-top:4px; font-size:1rem; }
+
+.av-color-1 { background:linear-gradient(135deg,var(--granate),#4a1010); }
+.av-color-2 { background:linear-gradient(135deg,var(--green),#1a5c32); }
+.av-color-3 { background:linear-gradient(135deg,var(--blue),#1a3a8c); }
+.av-color-4 { background:linear-gradient(135deg,var(--purple),#4c1d95); }
+.av-color-5 { background:linear-gradient(135deg,#c0392b,#922b21); }
+.av-color-6 { background:linear-gradient(135deg,#16a085,#0e6655); }
+
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:28px; }
+@media(max-width:768px) { .profile-grid { grid-template-columns:1fr; } }
+.profile-card { background:var(--white); border-radius:12px; padding:24px;
+                box-shadow:0 2px 12px rgba(0,0,0,.05); border-left:4px solid var(--border); }
+.profile-card h4 { font-family:'Montserrat',sans-serif; font-weight:700; font-size:1rem;
+                   margin-bottom:10px; color:var(--dark); display:flex; align-items:center; gap:8px; }
+.profile-card ul { list-style:none; padding:0; }
+.profile-card li { padding:5px 0; border-bottom:1px solid #f0eeeb; font-size:.95rem; }
+.profile-card li:last-child { border:none; }
+.profile-card li strong { color:var(--dark); }
+
+/* ── ÁNGULOS TABLE ── */
+.angles-table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden;
+                box-shadow:var(--shadow); margin-bottom:28px; }
+.angles-table thead { background:var(--dark); color:#fff; }
+.angles-table th { font-family:'Montserrat',sans-serif; font-weight:700; padding:14px 16px;
+                   text-align:left; font-size:.85rem; text-transform:uppercase; letter-spacing:1px; }
+.angles-table td { padding:14px 16px; border-bottom:1px solid var(--border); font-size:.93rem;
+                   background:var(--white); }
+.angles-table tr:last-child td { border:none; }
+.angles-table .badge { display:inline-block; padding:3px 10px; border-radius:20px;
+                       font-size:.75rem; font-weight:600; }
+.badge-ugc { background:#e8f5e9; color:#2d8a4e; }
+.badge-testi { background:#e3f2fd; color:#1565c0; }
+.badge-compar { background:#fce4ec; color:#c62828; }
+.badge-demo { background:#fff3e0; color:#e65100; }
+.badge-emocional { background:#f3e5f5; color:#6a1b9a; }
+
+/* ── MATRIZ ── */
+.matrix-table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden;
+                box-shadow:var(--shadow); }
+.matrix-table th, .matrix-table td { padding:12px 14px; text-align:center; font-size:.88rem; }
+.matrix-table thead th { background:var(--dark); color:#fff; font-family:'Montserrat',sans-serif;
+                         font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.matrix-table tbody th { background:var(--granate); color:#fff; font-weight:600; text-align:left;
+                         padding-left:16px; }
+.matrix-table td { background:var(--white); border:1px solid var(--border); }
+.cell-high { background:#e8f5e9!important; color:#2d8a4e; font-weight:700; }
+.cell-mid  { background:#fff3e0!important; color:#e65100; font-weight:600; }
+.cell-low  { background:#fafafa!important; color:#999; }
+
+/* ── RECOMENDACIÓN ── */
+.reco-box { background:linear-gradient(135deg,var(--granate),#4a1010); color:#fff;
+            border-radius:var(--radius); padding:40px; text-align:center; }
+.reco-box h3 { font-family:'Montserrat',sans-serif; font-size:1.6rem; font-weight:800;
+               margin-bottom:16px; }
+.reco-box p { max-width:700px; margin:0 auto; font-size:1.05rem; line-height:1.7; opacity:.92; }
+.reco-priorities { display:flex; justify-content:center; gap:32px; margin-top:28px; flex-wrap:wrap; }
+.reco-pill { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3);
+             border-radius:40px; padding:12px 28px; font-weight:700;
+             font-family:'Montserrat',sans-serif; font-size:1rem; }
+.reco-pill.gold { background:var(--gold); color:var(--dark); border-color:var(--gold); }
+
+/* ── FOOTER ── */
+footer { background:var(--dark); color:rgba(255,255,255,.6); text-align:center;
+         padding:24px 0; font-size:.85rem; }
+</style>
+</head>
+<body>
+
+    <header class="header">
+      <div class="container header-inner">
+        <h1>ROOKIE 2 RICHES</h1>
+        <span>@ecomjuliann</span>
+      </div>
+    </header>
+    <div class="top-bar">ARQUITECTO AVATAR — MAPA ESTRATÉGICO DE AUDIENCIAS</div>
+    
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">Resumen Ejecutivo</h2>
+        <p class="section-sub">Análisis profundo de 6 perfiles psicográficos (4 masculinos + 2 femeninos) para OilShield™ en Guatemala,
+           con 5 ángulos de venta por avatar.</p>
+        
+    <div class="exec-grid">
+      <div class="exec-card">
+        <div class="number">6</div>
+        <div class="label">Avatares Identificados</div>
+      </div>
+      <div class="exec-card">
+        <div class="number">30</div>
+        <div class="label">Ángulos de Venta</div>
+      </div>
+      <div class="exec-card">
+        <div class="number">♂♀</div>
+        <div class="label">Tipos Psicográficos</div>
+      </div>
+      <div class="exec-card">
+        <div class="number">🏹</div>
+        <div class="label">Producto: OilShield™</div>
+      </div>
+    </div>
+    <div style="background:var(--white);border-radius:var(--radius);padding:24px 32px;
+                box-shadow:var(--shadow);max-width:800px;margin:0 auto;">
+      <p style="font-size:1.05rem;line-height:1.8;color:var(--text);">
+        <strong>Producto:</strong> OilShield™ — Limpiador Nano-molecular de Película de Aceite<br>
+        <strong>Mercado:</strong> Guatemala (COD – Pago Contra Entrega)<br>
+        <strong>Fecha de Análisis:</strong> 10 de Marzo, 2026<br>
+        <strong>Metodología:</strong> Validación en mercados sofisticados (BR, USA, DE) + perfilamiento psicográfico
+        con neuroventas + ángulos de venta por framework PAS/PRESTO.
+      </p>
+    </div>
+    
+      </div>
+    </section>
+    
+<section>
+  <div class="container">
+    <h2 class="section-title">Análisis Profundo de Avatares</h2>
+    <p class="section-sub">6 perfiles psicográficos (4 masculinos + 2 femeninos) con motivaciones, miedos, comportamiento de compra
+       y ángulos de venta específicos para OilShield™ en Guatemala.</p>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-1">
+        <div class="emoji">🏆</div>
+        <div>
+          <h3>Don Carlos — El Guardián del Orgullo</h3>
+          <div class="quote">"Mi carro es mi carta de presentación. Si no brilla, no salgo."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Autorrealización / Emocional</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Hombre, 50-65 años. Padre de familia consolidado. Profesional, comerciante o jubilado activo. Vive en zonas urbanas (Mixco, Villa Nueva, Zona 10-14).</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Rutina ordenada: iglesia los domingos, reuniones familiares, paseos con la esposa. El carro es parte de su identidad — lo lava él mismo los sábados.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q8,000 – Q20,000. No es rico, pero tiene para cuidar lo suyo. Gasta con criterio.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">Toyota Corolla 2012-2018, Nissan Sentra o Hyundai Tucson. Más de 5 años pero 'parece nuevo' porque lo cuida.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>Disciplina y orden</strong> — Un hombre que no cuida su carro no cuida su vida</li><li><strong>Herencia y ejemplo</strong> — Quiere que sus hijos vean que las cosas se cuidan, no se desechan</li><li><strong>Independencia</strong> — 'No necesito pagar a nadie para esto. Yo me las arreglo solo'</li><li><strong>Orgullo silencioso</strong> — No lo dice, pero le encanta cuando le preguntan: '¿Acabás de comprar ese carro?'</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Reconocimiento</strong> — Que los vecinos, la familia y los colegas noten que su carro está impecable</li><li><strong>Control</strong> — Sentir que el deterioro del tiempo NO le gana</li><li><strong>Satisfacción del 'DIY'</strong> — La gratificación de hacerlo con sus propias manos</li><li><strong>Nostalgia</strong> — Recuperar la sensación de carro nuevo, de cuando lo sacó de la agencia</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Que el producto raye el vidrio (miedo #1 — necesita garantía explícita)</li><li>Que sea solo 'agua con jabón caro' (necesita ver la ciencia/mecanismo)</li><li>Pagar online — prefiere Pago Contra Entrega</li><li>Que no funcione y haber 'perdido el pisto' frente a su esposa</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Busca en Facebook, NO en Google — ve anuncios en su feed mientras descansa</li><li>Lee comentarios y testimonios de gente como él (50+ años, guatemaltecos)</li><li>Necesita ver un 'antes y después' para convencerse</li><li>Compra por impulso emocional pero justifica con lógica ('me ahorro el lavadero')</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. El Reflejo</td>
+          <td><em>"Tu carro dice mucho de vos. ¿Qué dice el tuyo ahora mismo?"</em></td>
+          <td>Orgullo / Identidad</td>
+          <td><span class="badge badge-ugc">UGC Testimonio</span></td>
+          <td>Empático, masculino, respetuoso</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. Rejuvenecimiento</td>
+          <td><em>"Recuperá la transparencia de cuando lo sacaste de la agencia — en 5 minutos."</em></td>
+          <td>Nostalgia / Satisfacción</td>
+          <td><span class="badge badge-demo">Demo Antes/Después</span></td>
+          <td>Aspiracional, enfocado en resultado</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. El Estándar</td>
+          <td><em>"Los hombres que cuidan lo suyo no dejan sus vidrios opacos."</em></td>
+          <td>Masculinidad / Estándar</td>
+          <td><span class="badge badge-compar">Comparativo</span></td>
+          <td>Directo, retador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Hazlo Vos Mismo</td>
+          <td><em>"Sin lavaderos. Sin esperar. Sin pagar de más. Vos y 5 minutos."</em></td>
+          <td>Independencia / Control</td>
+          <td><span class="badge badge-ugc">UGC DIY</span></td>
+          <td>Práctico, empoderador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. La Pregunta</td>
+          <td><em>"¿Cuánto llevas manejando con vidrios que no te dejan ver bien?"</em></td>
+          <td>Preocupación / Seguridad</td>
+          <td><span class="badge badge-emocional">Emocional</span></td>
+          <td>Provocador, reflexivo</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-2">
+        <div class="emoji">💰</div>
+        <div>
+          <h3>Don Jorge — El Administrador Eficiente</h3>
+          <div class="quote">"Pisto ahorrado es pisto ganado. Y yo no boto el pisto."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Racional / Ahorro</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Hombre, 45-60 años. Trabajador asalariado o microempresario. Pragmático, calculador. Vive en zonas comerciales o periurbanas.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Madrugador. Usa el carro para trabajar (repartidor, vendedor, transportista). El carro es herramienta, no lujo — pero lo cuida porque es su inversión.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q5,000 – Q12,000. Cada quetzal cuenta. Odia los gastos 'invisibles' que no dan resultado.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">Pick-up Toyota Hilux, Nissan Frontier o sedan económico. El carro tiene polvo, grasa de carretera y aceite industrial.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>Eficiencia</strong> — Busca el máximo resultado con el mínimo gasto</li><li><strong>Desconfianza inteligente</strong> — Asume que todo es 'caro para lo que es' hasta que pruebe lo contrario</li><li><strong>Autosuficiencia</strong> — 'Si puedo hacerlo yo, ¿para qué pago?'</li><li><strong>Responsabilidad familiar</strong> — El pisto que ahorra es pisto para la familia</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Ahorro tangible</strong> — Necesita ver el número: 'Te ahorrás Q150 por lavada'</li><li><strong>Frustración resuelta</strong> — Está HARTO de pagar lavaderos que no quitan la grasa real</li><li><strong>Durabilidad</strong> — Un producto que dura semanas, no horas, lo vuelve loco de felicidad</li><li><strong>Inteligencia de compra</strong> — Sentirse 'vivo' por encontrar algo bueno y barato</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Que sea un producto 'gringo caro' que no se adapta a Guatemala</li><li>Que no funcione en el tipo de grasa de las carreteras centroamericanas</li><li>Que tenga que comprar accesorios adicionales para que funcione</li><li>Que las 'ofertas' sean solo trucos para cobrar más</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Compara precios mentalmente — siempre calcula 'cuántas lavadas me ahorro'</li><li>Lee las preguntas frecuentes antes de comprar</li><li>Se convence con testimonios de gente trabajadora como él, no influencers</li><li>Necesita la opción de Pago Contra Entrega — cero riesgo</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. Costo por Lavada</td>
+          <td><em>"Dejá de regalar Q200 al lavadero cada mes. Hacélo vos por Q8 la aplicación."</em></td>
+          <td>Ahorro / Lógica</td>
+          <td><span class="badge badge-compar">Comparativo de costos</span></td>
+          <td>Directo, con números</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. La Cuenta</td>
+          <td><em>"Un lavadero = Q150. OilShield = 30+ lavadas por Q249. Hacé la cuenta."</em></td>
+          <td>Inteligencia financiera</td>
+          <td><span class="badge badge-demo">Infografía</span></td>
+          <td>Práctico, calculador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. Frustración</td>
+          <td><em>"¿Pagaste Q200 y tu vidrio sigue con grasa? No sos vos, es el lavadero."</em></td>
+          <td>Frustración / Validación</td>
+          <td><span class="badge badge-ugc">UGC Testimonio</span></td>
+          <td>Empático, agitador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Triple Duración</td>
+          <td><em>"Una aplicación que dura 3-6 semanas. No horas, SEMANAS."</em></td>
+          <td>Durabilidad / Eficiencia</td>
+          <td><span class="badge badge-demo">Demo con timer</span></td>
+          <td>Enfático, impactante</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. Inversión Inteligente</td>
+          <td><em>"Q249 que te ahorran más de Q1,800 al año en lavaderos. Eso sí es negocio."</em></td>
+          <td>ROI / Pisto inteligente</td>
+          <td><span class="badge badge-testi">Testimonio + cálculo</span></td>
+          <td>Calculador, convincente</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-3">
+        <div class="emoji">🛡️</div>
+        <div>
+          <h3>Andrés — El Padre Protector</h3>
+          <div class="quote">"Bajo la lluvia de Guatemala, mi único miedo es no poder ver el camino."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Emocional / Seguridad</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Hombre, 35-50 años. Padre de hijos pequeños o adolescentes. Profesional de oficina o emprendedor. Maneja diario por la ciudad y carreteras.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Rutina familiar intensa: llevar a los hijos al colegio, recoger a la esposa, viajes los fines de semana a Antigua, Panajachel o la costa. El carro es el 'refugio móvil' de la familia.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q10,000 – Q25,000. Suficiente para invertir en la seguridad de su familia sin pensarlo dos veces.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">SUV familiar: RAV4, CRV, Tucson o Kia Sportage. Lo usa para todo — del colegio a la carretera.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>La familia primero</strong> — Todo lo que hace es por proteger a los suyos</li><li><strong>Prevención</strong> — Prefiere gastar Q249 hoy que arriesgarse a un accidente</li><li><strong>Responsabilidad silenciosa</strong> — No dice 'tengo miedo', pero toma acción para eliminar riesgos</li><li><strong>Modernidad práctica</strong> — Está abierto a productos nuevos si resuelven un problema real</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Paz mental</strong> — Saber que va a VER bien la carretera aunque llueva fuerte</li><li><strong>Protección activa</strong> — Sentir que hizo algo concreto para proteger a su familia</li><li><strong>Eliminación de ansiedad nocturna</strong> — Las luces de noche en vidrios grasosos son su pesadilla</li><li><strong>Confianza al volante</strong> — Manejar relajado, no tenso y agarrado del timón</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Un accidente donde no pudo ver a tiempo — este es el miedo existencial</li><li>Que el producto sea 'cosmético' y no mejore realmente la visibilidad</li><li>No saber aplicarlo bien y dañar algo del vidrio</li><li>Que sus hijos vayan atrás y él no pueda ver bien por la lluvia</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Investiga un poco pero decide rápido si toca la fibra emocional correcta</li><li>Le convence más un video de lluvia real que un testimonial de texto</li><li>Compra por WhatsApp sin problema — está acostumbrado al e-commerce</li><li>Si el producto promete seguridad para su familia, el precio es secundario</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. El Aguacero</td>
+          <td><em>"El próximo aguacero no avisa. ¿Estás seguro que vas a ver el camino?"</em></td>
+          <td>Miedo / Anticipación</td>
+          <td><span class="badge badge-demo">Video lluvia real</span></td>
+          <td>Urgente, provocador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. Cero Reflejos</td>
+          <td><em>"Eliminá el peligroso 'efecto espejo' que las luces de noche causan en vidrios grasosos."</em></td>
+          <td>Miedo nocturno</td>
+          <td><span class="badge badge-demo">Demo noche</span></td>
+          <td>Técnico, serio</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. El Trayecto</td>
+          <td><em>"Del colegio a la casa, de la casa al trabajo. Tus hijos van atrás. ¿Ves bien?"</em></td>
+          <td>Responsabilidad</td>
+          <td><span class="badge badge-emocional">Emocional familia</span></td>
+          <td>Íntimo, paternal</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Prevención</td>
+          <td><em>"Q249 vs una consulta al mecánico por un golpe que pudiste evitar."</em></td>
+          <td>Costo de NO actuar</td>
+          <td><span class="badge badge-compar">Comparativo emocional</span></td>
+          <td>Lógico-emocional</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. Tecnología Activa</td>
+          <td><em>"No es un limpiador. Es una capa nano-molecular que repele agua y aceite por semanas."</em></td>
+          <td>Innovación / Confianza</td>
+          <td><span class="badge badge-demo">Demo técnica</span></td>
+          <td>Científico, de autoridad</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-4">
+        <div class="emoji">✨</div>
+        <div>
+          <h3>Kevin — El Detailer Amateur</h3>
+          <div class="quote">"Si no brilla, no es mío. Mis vidrios tienen que verse HD."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Aspiracional / Estética</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Joven, 22-35 años. Soltero o recién casado. Trabaja en ventas, servicio al cliente o tiene su propio negocio. Activo en redes sociales.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Amante de los carros, sigue cuentas de detailing en Instagram y TikTok. Va a 'Car Meets' los fines de semana. Le importa lo que piensan los demás de su carro.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q4,000 – Q10,000. No gana mucho pero prioriza su carro sobre otras cosas.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">Civic, Mazda 3, Golf o pickup modificada. El carro puede ser viejo pero está 'tuneado' o al menos super limpio.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>Imagen y estatus</strong> — Tu carro habla por vos antes de que abrás la boca</li><li><strong>Comunidad</strong> — Pertenecer al grupo de los que 'sí cuidan su carro'</li><li><strong>Knowledge</strong> — Le encanta saber de productos, técnicas, hacks de limpieza</li><li><strong>Perfeccionismo</strong> — Un detalle sucio le arruina todo. Los vidrios opacos son inaceptables</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Reconocimiento social</strong> — Que le pidan consejos: '¿Qué le echás a tus vidrios?'</li><li><strong>Efecto 'WOW'</strong> — Que la gente se quede viendo su carro cuando pasa</li><li><strong>Superioridad visual</strong> — Tener los vidrios más limpios del parking o del Meet</li><li><strong>Content Creation</strong> — Quiere un resultado tan bueno que valga la pena filmarlo</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Que el producto sea 'de señor' y no sea cool compartirlo</li><li>Que no se vea la diferencia en video/fotos — necesita resultado visual viral</li><li>Que haya un producto mejor que él no conoce (FOMO inverso)</li><li>Precio alto vs su presupuesto limitado — necesita la opción de 1 unidad</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Compra desde TikTok o Instagram — casi nunca desde Facebook</li><li>Se convence con reviews de otros 'detailers' o entusiastas, no con autoridades</li><li>Le atraen los empaques premium y las marcas que 'se ven pro'</li><li>Compra rápido si el hook visual es potente — menos de 3 segundos para decidir</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. Full HD</td>
+          <td><em>"Dale a tus cristales un acabado Full HD. Los vidrios más limpios del Meet."</em></td>
+          <td>Estatus / Perfección</td>
+          <td><span class="badge badge-demo">Demo satisfactorio</span></td>
+          <td>Dinámico, informal, 'cool'</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. El Hack</td>
+          <td><em>"El producto secreto que los detailers PRO no te cuentan. Ahora es tuyo."</em></td>
+          <td>Exclusividad / Conocimiento</td>
+          <td><span class="badge badge-ugc">UGC revelación</span></td>
+          <td>Misterioso, insider</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. Car Meet Ready</td>
+          <td><em>"Antes del Meet, una pasada de OilShield. Vidrios de showroom en 5 min."</em></td>
+          <td>Comunidad / Preparación</td>
+          <td><span class="badge badge-ugc">Lifestyle Meet</span></td>
+          <td>Energético, comunitario</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Antes y Después Viral</td>
+          <td><em>"El 'before & after' más satisfactorio que vas a ver hoy. Mirá esto."</em></td>
+          <td>Viralidad / WOW</td>
+          <td><span class="badge badge-demo">Video satisfactorio</span></td>
+          <td>Hook viral, rápido</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. Nivel PRO</td>
+          <td><em>"Dejá de usar productos de supermercado. Subí al nivel nano-molecular."</em></td>
+          <td>Upgrade / Aspiración</td>
+          <td><span class="badge badge-compar">Comparativo productos</span></td>
+          <td>Aspiracional, técnico</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-5">
+        <div class="emoji">👩‍👧‍👦</div>
+        <div>
+          <h3>Doña María — La Madre Vigilante</h3>
+          <div class="quote">"Yo manejo con mis hijos. No puedo darme el lujo de no ver bien."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Seguridad / Maternal</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Mujer, 35-55 años. Madre de familia. Ama de casa activa, profesional o comerciante. Maneja diario para llevar a sus hijos al colegio, hacer mandados y trabajar.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Rutina intensa: colegio, supermercado, reuniones. El carro es su herramienta de vida — lo usa más que nadie en la familia. Prefiere resolver sola antes que depender de otros.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q6,000 – Q18,000 (propio o familiar). Administra el presupuesto del hogar con criterio. Gasta en lo que protege a su familia.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">Hatchback o sedan familiar: Yaris, Aveo, Hyundai Accent. O la SUV del esposo cuando llueve. Carro funcional, no de lujo.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>Protección maternal</strong> — Sus hijos van atrás. Punto. No negocia la seguridad</li><li><strong>Autonomía</strong> — 'Yo puedo resolver esto sin pedirle a nadie'</li><li><strong>Practicidad extrema</strong> — Si no es fácil de usar, no le interesa</li><li><strong>Responsabilidad del hogar</strong> — Ella administra, ella decide, ella cuida</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Tranquilidad al volante</strong> — Manejar sin ansiedad cuando llueve de noche</li><li><strong>Orgullo silencioso</strong> — Mantener el carro limpio sin depender del esposo o del lavadero</li><li><strong>Protección activa</strong> — Sentir que hizo algo concreto por la seguridad de su familia</li><li><strong>Eficiencia</strong> — Una sola aplicación que dure semanas = menos cosas en su lista de pendientes</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Que sea difícil de aplicar — necesita ser simple, sin herramientas especiales</li><li>Que raye o dañe el vidrio — miedo a estropear algo</li><li>Que sea un 'producto de hombres' y no se sienta identificada</li><li>Que tenga químicos fuertes o tóxicos — preocupación por los niños en el carro</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Ve anuncios en Facebook e Instagram mientras descansa en la noche</li><li>Le convencen los testimonios de otras mamás o mujeres que manejan</li><li>Compra por WhatsApp o Pago Contra Entrega — cero riesgo</li><li>Decide rápido si el producto resuelve un dolor real y es fácil de usar</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. Mamá al Volante</td>
+          <td><em>"Llevás a tus hijos al cole todos los días. ¿Estás segura que ves bien cuando llueve?"</em></td>
+          <td>Miedo maternal / Protección</td>
+          <td><span class="badge badge-ugc">UGC Testimonio mamá</span></td>
+          <td>Empático, maternal, cercano</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. Fácil y Rápido</td>
+          <td><em>"5 minutos. Sin herramientas. Sin ayuda. Vos sola podés hacerlo."</em></td>
+          <td>Autonomía / Practicidad</td>
+          <td><span class="badge badge-demo">Demo tutorial</span></td>
+          <td>Empoderador, directo, femenino</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. Lluvia de Noche</td>
+          <td><em>"Esas luces que te ciegan en la noche + lluvia + vidrio grasoso = PELIGRO."</em></td>
+          <td>Miedo nocturno / Seguridad</td>
+          <td><span class="badge badge-demo">Video lluvia real</span></td>
+          <td>Urgente, serio, protector</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Sin Lavadero</td>
+          <td><em>"Dejá de esperar al fin de semana para limpiar tus vidrios. Hacélo vos en 5 min."</em></td>
+          <td>Independencia / Eficiencia</td>
+          <td><span class="badge badge-demo">Demo antes/después</span></td>
+          <td>Práctico, empoderador</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. Carro Familiar Seguro</td>
+          <td><em>"Tu carro lleva lo más importante: tu familia. Que se vea y se sienta seguro."</em></td>
+          <td>Seguridad / Valor familiar</td>
+          <td><span class="badge badge-emocional">Emocional familia</span></td>
+          <td>Emotivo, aspiracional</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+    <div class="avatar-section">
+      <div class="avatar-header av-color-6">
+        <div class="emoji">💼</div>
+        <div>
+          <h3>Sofía — La Profesional Moderna</h3>
+          <div class="quote">"Mi carro refleja quién soy. Limpio, ordenado y profesional."</div>
+          <div style="margin-top:6px;font-size:.85rem;opacity:.8;">Tipo: Imagen / Profesional</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">📋 Perfil Demográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>📋 Edad y Perfil</h4>
+          <p style="font-size:.93rem;">Mujer, 25-40 años. Profesional activa, emprendedora o ejecutiva. Soltera o casada sin hijos (o hijos pequeños). Vive en zonas urbanas (Zona 10-14, Carretera a El Salvador).</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Estilo de Vida</h4>
+          <p style="font-size:.93rem;">Agenda ocupada: oficina, gym, reuniones, eventos sociales. El carro es extensión de su imagen profesional. Le importa la estética y el detalle.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Ingreso Mensual</h4>
+          <p style="font-size:.93rem;">Q12,000 – Q30,000. Tiene recursos para invertir en calidad. No busca lo más barato, busca lo mejor.</p>
+        </div>
+        <div class="profile-card">
+          <h4>📋 Vehículo Típico</h4>
+          <p style="font-size:.93rem;">Mazda CX-5, Kia Seltos, VW Tiguan o sedan moderno. Carro en buenas condiciones porque es parte de su imagen.</p>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🧠 Perfil Psicográfico</h4>
+      <div class="profile-grid">
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>💎 Valores Profundos</h4>
+          <ul><li><strong>Imagen profesional</strong> — Su carro es su primera impresión ante clientes y colegas</li><li><strong>Eficiencia</strong> — Todo lo que ahorre tiempo es bienvenido. Su agenda no perdona</li><li><strong>Calidad sobre precio</strong> — Prefiere pagar más por algo que realmente funcione</li><li><strong>Independencia</strong> — No espera a que alguien le resuelva. Ella se encarga</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🧠 Motivaciones Emocionales (Neuroventas)</h4>
+          <ul><li><strong>Imagen impecable</strong> — Llegar a una reunión con el carro brillante dice mucho de ella</li><li><strong>Eficiencia de tiempo</strong> — Una solución que dura semanas = una cosa menos en su agenda</li><li><strong>Satisfacción personal</strong> — El placer de tener todo bajo control y bien presentado</li><li><strong>Seguridad vial</strong> — Manejar con visibilidad perfecta, especialmente de noche</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>😰 Miedos y Bloqueos</h4>
+          <ul><li>Que sea un producto 'masculino' o feo — le importa el empaque y la presentación</li><li>Que sea complicado o requiera fuerza — necesita ser fácil y elegante</li><li>Que no se note la diferencia — necesita resultado visible para justificar la compra</li><li>Que deje residuos o manchas — el vidrio debe quedar perfecto, no 'medio limpio'</li></ul>
+        </div>
+        <div class="profile-card" style="border-left-color:var(--granate);">
+          <h4>🛒 Comportamiento de Compra</h4>
+          <ul><li>Compra desde Instagram — sigue marcas premium y lifestyle</li><li>Le convencen reviews de mujeres profesionales y videos de resultado satisfactorio</li><li>Paga online sin problema — tarjeta de crédito, no necesita COD</li><li>Investiga poco pero decide por calidad percibida: empaque, presentación, reviews</li></ul>
+        </div></div>
+
+      <h4 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;
+                 margin-bottom:16px;color:var(--dark);">🎯 Ángulos de Venta (5)</h4>
+      <table class="angles-table">
+        <thead><tr>
+          <th>Ángulo</th><th>Hook Sugerido</th><th>Emoción</th><th>Formato</th><th>Tono</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:700;">1. Primera Impresión</td>
+          <td><em>"Tu carro habla antes que vos. ¿Qué dice con los vidrios opacos?"</em></td>
+          <td>Imagen / Profesionalismo</td>
+          <td><span class="badge badge-ugc">Lifestyle profesional</span></td>
+          <td>Sofisticado, aspiracional</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">2. Sin Tiempo</td>
+          <td><em>"Agenda llena, cero tiempo para lavaderos. 5 minutos y vidrios perfectos por semanas."</em></td>
+          <td>Eficiencia / Tiempo</td>
+          <td><span class="badge badge-demo">Demo rápida</span></td>
+          <td>Directo, práctico, moderno</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">3. Calidad Premium</td>
+          <td><em>"No es un limpiador genérico. Es tecnología nano-molecular para quien exige más."</em></td>
+          <td>Calidad / Exclusividad</td>
+          <td><span class="badge badge-compar">Comparativo premium</span></td>
+          <td>Elegante, de autoridad</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">4. Noche Segura</td>
+          <td><em>"Reuniones de noche, carretera oscura, vidrios grasosos. OilShield elimina el riesgo."</em></td>
+          <td>Seguridad nocturna</td>
+          <td><span class="badge badge-demo">Demo noche</span></td>
+          <td>Serio, protector, directo</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">5. Self-Care Automotriz</td>
+          <td><em>"Cuidás tu piel, tu pelo, tu ropa. ¿Por qué no cuidás tus vidrios?"</em></td>
+          <td>Self-care / Identidad</td>
+          <td><span class="badge badge-ugc">UGC femenino</span></td>
+          <td>Cercano, lifestyle, moderno</td>
+        </tr></tbody>
+      </table>
+    </div>
+    
+  </div>
+</section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">Matriz Avatar × Ángulo</h2>
+        <p class="section-sub">Cruza cada ángulo de venta con los 6 avatares para identificar
+           la combinación de mayor impacto. ⭐⭐⭐ = Alta afinidad.</p>
+        <table class="matrix-table">
+          <thead><tr>
+            <th>Ángulo de Venta</th>
+            <th>🏆 Don Carlos<br><small>Orgullo</small></th>
+            <th>💰 Don Jorge<br><small>Ahorro</small></th>
+            <th>🛡️ Andrés<br><small>Protección</small></th>
+            <th>✨ Kevin<br><small>Estética</small></th>
+            <th>👩‍👧‍👦 Doña María<br><small>Maternal</small></th>
+            <th>💼 Sofía<br><small>Profesional</small></th>
+          </tr></thead>
+          <tbody><tr><th>Autorrealización / Orgullo</th><td class="cell-high">⭐⭐⭐</td><td class="cell-mid">⭐⭐</td><td class="cell-mid">⭐⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td></tr><tr><th>Ahorro / Eficiencia</th><td class="cell-mid">⭐⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td></tr><tr><th>Seguridad Familiar</th><td class="cell-mid">⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-mid">⭐⭐</td></tr><tr><th>Estética / Estatus</th><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td></tr><tr><th>DIY / Independencia</th><td class="cell-high">⭐⭐⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-mid">⭐⭐</td><td class="cell-mid">⭐⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-mid">⭐⭐</td></tr><tr><th>Imagen Profesional</th><td class="cell-mid">⭐⭐</td><td class="cell-low">⭐</td><td class="cell-low">⭐</td><td class="cell-mid">⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td></tr><tr><th>Protección Maternal</th><td class="cell-low">⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-low">⭐</td><td class="cell-high">⭐⭐⭐</td><td class="cell-mid">⭐⭐</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    
+
+    <section style="background:var(--bg);">
+      <div class="container">
+        <div class="reco-box">
+          <h3>📌 Recomendación Estratégica de Lanzamiento</h3>
+          <p>Para el lanzamiento inicial de OilShield™ en Guatemala, priorizar los
+             <strong>Avatares 1 y 2</strong> (Don Carlos y Don Jorge, 45-65 años) —
+             mayor poder adquisitivo, decisión de compra autónoma y afinidad natural
+             con el producto. <strong>Doña María</strong> (Madre Vigilante) es el avatar
+             femenino de mayor impacto — combina urgencia emocional con decisión de compra
+             autónoma. <strong>Sofía</strong> (Profesional Moderna) es ideal para Instagram
+             y audiencias de mayor ingreso. El <strong>Avatar 3</strong> (Padre Protector)
+             y Doña María son ideales para campañas de temporada lluviosa (mayo-octubre).
+             <strong>Kevin</strong> funciona como amplificador orgánico en TikTok.</p>
+          <div class="reco-priorities">
+            <div class="reco-pill gold">🥇 Don Carlos — PRIORIDAD 1</div>
+            <div class="reco-pill gold">🥈 Don Jorge — PRIORIDAD 2</div>
+            <div class="reco-pill gold">🥉 Doña María — PRIORIDAD 3</div>
+            <div class="reco-pill">4° Andrés — Temporada Lluvia</div>
+            <div class="reco-pill">5° Sofía — Instagram Premium</div>
+            <div class="reco-pill">6° Kevin — Amplificador TikTok</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <footer>
+      <p>Arquitecto Avatar — OilShield™ Guatemala — Generado automáticamente | ROOKIE2RICHES Framework</p>
+    </footer>
+    
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard General — OilShield™ Guatemala</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #0f0f13;
+            --card-bg: #1a1a24;
+            --card-border: #2a2a3a;
+            --white: #ffffff;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --granate: #c0392b;
+            --granate-glow: rgba(192, 57, 43, .25);
+            --green: #27ae60;
+            --green-glow: rgba(39, 174, 96, .2);
+            --gold: #f39c12;
+            --gold-glow: rgba(243, 156, 18, .2);
+            --blue: #2980b9;
+            --blue-glow: rgba(41, 128, 185, .2);
+            --purple: #8e44ad;
+            --purple-glow: rgba(142, 68, 173, .2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, .3);
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1a1a24 0%, #0f0f13 100%);
+            border-bottom: 1px solid var(--card-border);
+            padding: 32px 0;
+            text-align: center;
+        }
+
+        .dashboard-header .brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: var(--granate);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .dashboard-header .meta {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-pill {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: .85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-pill strong {
+            color: var(--white);
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── AGENT CARDS GRID ── */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+            padding: 48px 0;
+        }
+
+        /* ── AGENT CARD ── */
+        .agent-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all .3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow);
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .agent-card.hunter::before {
+            background: var(--granate);
+        }
+
+        .agent-card.hunter:hover {
+            border-color: var(--granate);
+            box-shadow: 0 8px 32px var(--granate-glow);
+        }
+
+        .agent-card.auditor::before {
+            background: var(--gold);
+        }
+
+        .agent-card.auditor:hover {
+            border-color: var(--gold);
+            box-shadow: 0 8px 32px var(--gold-glow);
+        }
+
+        .agent-card.avatar::before {
+            background: var(--blue);
+        }
+
+        .agent-card.avatar:hover {
+            border-color: var(--blue);
+            box-shadow: 0 8px 32px var(--blue-glow);
+        }
+
+        .agent-card.creativos::before {
+            background: var(--purple);
+        }
+
+        .agent-card.creativos:hover {
+            border-color: var(--purple);
+            box-shadow: 0 8px 32px var(--purple-glow);
+        }
+
+        .agent-card.landing::before {
+            background: var(--green);
+        }
+
+        .agent-card.landing:hover {
+            border-color: var(--green);
+            box-shadow: 0 8px 32px var(--green-glow);
+        }
+
+        .card-body {
+            padding: 28px;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .card-role {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .card-role.hunter-color {
+            color: var(--granate);
+        }
+
+        .card-role.auditor-color {
+            color: var(--gold);
+        }
+
+        .card-role.avatar-color {
+            color: var(--blue);
+        }
+
+        .card-role.creativos-color {
+            color: var(--purple);
+        }
+
+        .card-role.landing-color {
+            color: var(--green);
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, .04);
+            border-radius: 10px;
+            padding: 10px 14px;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .stat .value {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+
+        .stat .label {
+            font-size: .7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .card-desc {
+            font-size: .9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-link.hunter-color {
+            color: var(--granate);
+        }
+
+        .card-link.auditor-color {
+            color: var(--gold);
+        }
+
+        .card-link.avatar-color {
+            color: var(--blue);
+        }
+
+        .card-link.creativos-color {
+            color: var(--purple);
+        }
+
+        .card-link.landing-color {
+            color: var(--green);
+        }
+
+        /* ── LANDING SUBLINKS ── */
+        .sub-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .sub-link {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: .8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+        .sub-link:hover {
+            background: var(--green-glow);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            padding: 24px 0;
+            color: var(--text-muted);
+            font-size: .8rem;
+        }
+
+        @media(max-width: 768px) {
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── HEADER ── -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="brand">ROOKIE 2 RICHES</div>
+            <h1>Dashboard de Agentes</h1>
+            <p class="subtitle">Análisis completo del producto — todos los agentes en un solo lugar</p>
+            <div class="meta">
+                <span class="meta-pill"><strong>Producto:</strong> OilShield™</span>
+                <span class="meta-pill"><strong>País:</strong> Guatemala 🇬🇹</span>
+                <span class="meta-pill"><strong>Modelo:</strong> COD</span>
+                <span class="meta-pill"><strong>Fecha:</strong> 10 Marzo 2026</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── AGENT CARDS ── -->
+    <main class="container">
+        <div class="agents-grid">
+
+            <!-- HUNTER -->
+            <a class="agent-card hunter" href="Hunter/reporte_hunter_oilshield_gt.html">
+                <div class="card-body">
+                    <div class="card-icon">🏹</div>
+                    <div class="card-title">Hunter Expert</div>
+                    <div class="card-role hunter-color">Selección de Producto Ganador</div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="value">8.2</div>
+                            <div class="label">Puntaje</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value" style="color:var(--green);">GO</div>
+                            <div class="label">Veredicto</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">7</div>
+                            <div class="label">Criterios</div>
+                        </div>
+                    </div>
+                    <p class="card-desc">Análisis de tendencias, demanda, competencia y viabilidad.
+                        Producto validado en mercados sofisticados (BR, USA, DE).</p>
+                    <span class="card-link hunter-color">Ver reporte completo →</span>
+                </div>
+            </a>
+
+            <!-- AUDITOR -->
+            <a class="agent-card auditor" href="Auditor Financiero/reporte_auditor_oilshield_gt.html">
+                <div class="card-body">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Auditor Financiero</div>
+                    <div class="card-role auditor-color">Viabilidad Económica</div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="value">Q249</div>
+                            <div class="label">PV Aprobado</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value" style="color:var(--green);">40%</div>
+                            <div class="label">Margen</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">Q99</div>
+                            <div class="label">CPA Máx</div>
+                        </div>
+                    </div>
+                    <p class="card-desc">Desglose de costos, precios aprobados por paquete,
+                        3 escenarios de rentabilidad y veredicto financiero.</p>
+                    <span class="card-link auditor-color">Ver reporte completo →</span>
+                </div>
+            </a>
+
+            <!-- AVATAR -->
+            <a class="agent-card avatar" href="Arquitecto Avatar/reporte_avatares_oilshield_gt.html">
+                <div class="card-body">
+                    <div class="card-icon">👤</div>
+                    <div class="card-title">Arquitecto Avatar</div>
+                    <div class="card-role avatar-color">Mapa Estratégico de Audiencias</div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="value">6</div>
+                            <div class="label">Avatares</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">30</div>
+                            <div class="label">Ángulos</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">♂♀</div>
+                            <div class="label">Matriz</div>
+                        </div>
+                    </div>
+                    <p class="card-desc">6 perfiles psicográficos (4 masculinos + 2 femeninos) con neuroventas,
+                        5 ángulos por avatar y matriz cruzada de afinidad.</p>
+                    <span class="card-link avatar-color">Ver reporte completo →</span>
+                </div>
+            </a>
+
+            <!-- CREATIVOS -->
+            <a class="agent-card creativos" href="Arquitecto Creativos/reporte_rookie2riches_oilshield_gt.html">
+                <div class="card-body">
+                    <div class="card-icon">🎨</div>
+                    <div class="card-title">Arquitecto Creativos</div>
+                    <div class="card-role creativos-color">Estrategia Visual y Copy</div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="value">21</div>
+                            <div class="label">Secciones</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">R2R</div>
+                            <div class="label">Framework</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">2</div>
+                            <div class="label">Skills</div>
+                        </div>
+                    </div>
+                    <p class="card-desc">HTML ROOKIE2RICHES completo con copies persuasivos,
+                        briefs de imagen y estrategia de ads para Meta y TikTok.</p>
+                    <span class="card-link creativos-color">Ver reporte completo →</span>
+                </div>
+            </a>
+
+            <!-- LANDING -->
+            <div class="agent-card landing" style="cursor:default;">
+                <div class="card-body">
+                    <div class="card-icon">🏗️</div>
+                    <div class="card-title">Arquitecto de Landing</div>
+                    <div class="card-role landing-color">Landings por Ángulo de Venta</div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="value">4</div>
+                            <div class="label">Landings</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">R2R</div>
+                            <div class="label">Estructura</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value">COD</div>
+                            <div class="label">Modelo</div>
+                        </div>
+                    </div>
+                    <p class="card-desc">Landings completas con copies por ángulo de venta,
+                        listas para copiar y pegar en la página final.</p>
+                    <div class="sub-links">
+                        <a class="sub-link" href="Arquitecto de landing/angulo_ahorro_oilshield_gt.html">💰 Ángulo
+                            Ahorro</a>
+                        <a class="sub-link" href="Arquitecto de landing/doncarlos_reflejo_oilshield_gt.html"
+                            style="border-color:var(--gold); color:var(--gold);">👔 Don Carlos (Reflejo)</a>
+                        <a class="sub-link" href="Arquitecto de landing/doncarlos_rejuvenecimiento_oilshield_gt.html"
+                            style="border-color:var(--gold); color:var(--gold);">👴 Don Carlos (Rejuvenecimiento)</a>
+                        <a class="sub-link" href="Arquitecto de landing/doncarlos_diyhagalovusted_oilshield_gt.html"
+                            style="border-color:var(--gold); color:var(--gold);">🔧 Don Carlos (DIY)</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>ROOKIE 2 RICHES Framework — Dashboard de Agentes — OilShield™ Guatemala — @ecomjuliann</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Briefs Creativos: OilShield™ Guatemala</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --accent: #238636;
+            --accent-glow: #2ea043;
+            --text: #c9d1d9;
+            --text-bold: #f0f6fc;
+            --border: #30363d;
+            --cta: #238636;
+            --hero: #7ee787;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-bold);
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #7ee787, #aff5b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--hero);
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brief-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 35px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .brief-card:hover {
+            border-color: var(--accent);
+            transform: scale(1.01);
+            box-shadow: 0 15px 40px rgba(35, 134, 54, 0.1);
+        }
+
+        .brief-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .brief-id {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 800;
+            background: rgba(35, 134, 54, 0.1);
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
+        .brief-type {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-bold);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 850px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8b949e;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .value {
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+
+        .value.copy {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent);
+            font-weight: 700;
+            color: var(--text-bold);
+            font-size: 1.2rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 800;
+            margin-top: 15px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 14px rgba(35, 134, 54, 0.4);
+        }
+
+        .visual-desc {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #484f58;
+            color: #acbac7;
+            font-style: italic;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .coherence-tag {
+            font-size: 0.75rem;
+            color: #d29922;
+            background: rgba(210, 153, 34, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">EGS Master Framework</span>
+            <h1>OilShield™ 🇬🇹</h1>
+            <p>Estrategia Narrative Visual (Conceptos + Copys) · Ángulo: Ahorro masivo & Seguridad vial</p>
+            <p style="font-size: 0.9rem; color: #8b949e; margin-top: 10px;">Enfoque: Ideas claras para diseñador/editor
+                + Textos de alta conversión</p>
+        </header>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 1: HERO QUINTETO              -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">🟢 HERO QUINTETO (El Embudo Inicial)</div>
+
+        <!-- HERO 1 -->
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Gancho y Atención (Slide 1)</div>
+                <div class="brief-id">H-01</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Foto limpia del frasco OilShield sobre una superficie húmeda premium.
+                            El logo brilla. En el fondo, un carro de alta gama desenfocado en Guatemala.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">Deja de tirar dinero en el lavadero.</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">Visión cristalina en 5 minutos por solo Q249.</div>
+                    </div>
+                    <div class="cta-box">¡SÍ, QUIERO MI OFERTA — PAGAR AL RECIBIR!</div>
+                    <div class="coherence-tag">🔗 Coherente con H1 de la Landing</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO 2 -->
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">El Problema del Gasto (Slide 2)</div>
+                <div class="brief-id">H-02</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Imagen comparativa de un parabrisas sucio con el texto "Q100 cada
+                            lavada" tachado con una X roja. Una mano sosteniendo billetes de Q10.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">¿Cansado de parabrisas que vuelven a estar grasosos en 2 días?</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">Ahorra +Q1,200 al año eliminando la grasa de raíz.</div>
+                    </div>
+                    <div class="cta-box">QUIERO EMPEZAR A AHORRAR</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección de Transformación (Antes)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO 3 -->
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">La Solución y Mecanismo (Slide 3)</div>
+                <div class="brief-id">H-03</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Una persona aplicando el producto con movimientos circulares fáciles.
+                            Se ve una "ventana de claridad" abriéndose en la suciedad.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">Tecnología Nano-Film que disuelve el aceite al contacto.</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">No más reflejos peligrosos. Solo visión HD en 5 minutos.</div>
+                    </div>
+                    <div class="cta-box">VER CÓMO FUNCIONA</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección "Cómo se usa"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO 4 -->
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Prueba Social y Confianza (Slide 4)</div>
+                <div class="brief-id">H-04</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Composición de 3 sellos (Garantía, Pago al Recibir, Envío Gratis) con
+                            un fondo de carreteras de Guatemala.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">+3,800 conductores en Guatemala ya viajan seguros.</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">Garantía total de 30 días. Si no ahorras, te devolvemos el dinero.</div>
+                    </div>
+                    <div class="cta-box">PEDIR SIN RIESGO</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección de Garantías de Hierro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO 5 -->
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Oferta y Cierre (Slide 5)</div>
+                <div class="brief-id">H-05</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Foto del "Combo Inteligente": 2 frascos OilShield + microfibra de
+                            regalo. Etiquetas de "EL MEJOR VALOR" resaltadas.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">¡PIDE 2 Y AHORRA Q301 HOY MISMO!</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">Envío GRATIS y microfibra premium por tiempo limitado.</div>
+                    </div>
+                    <div class="cta-box">APROVECHAR OFERTA FINAL</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección de Oferta Escalada</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 2: TRANSFORMACIÓN             -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">🔄 TRANSFORMACIÓN VISUAL</div>
+
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Comparativa Lado a Lado</div>
+                <div class="brief-id">TRANS-01</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Split vertical agresivo. Izquierda: luces de tráfico deslumbrando por
+                            la grasa. Derecha: luz nítida y segura con OilShield aplicada.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">Tú decides: Seguir arriesgando tu vida o ver como un profesional.</div>
+                    </div>
+                    <div class="cta-box">VER DIFERENCIA REAL</div>
+                    <div class="coherence-tag">🔗 Coherente con Mecanismo Distintivo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 3: AUTORIDAD Y ESTADÍSTICAS    -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">📊 AUTORIDAD Y PRUEBA CIENTÍFICA</div>
+
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Infografía de Datos Reales</div>
+                <div class="brief-id">AUTH-01</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Infografía limpia con 3 burbujas de datos. Iconos de advertencia y
+                            seguridad vial. Colores blanco y verde esmeralda.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">El 89% de los residuos de aceite NO se eliminan con champú tradicional.
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Subtexto</div>
+                        <div class="value">Fuente: Informe de Seguridad Vial SAE International 2024.</div>
+                    </div>
+                    <div class="cta-box">QUIERO LA SOLUCIÓN DEFINITIVA</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección de Autoridad</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 4: BENEFICIOS (GRILLA)         -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">⭐ BENEFICIOS IRREFUTABLES</div>
+
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Puntos de Valor Clave</div>
+                <div class="brief-id">BEN-01</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Grilla de 4 iconos minimalistas verdes sobre fondo oscuro: Un reloj (5
+                            min), un escudo (Protección), un fajo de billetes (Ahorro) y un rayo (Resultado inmediato).
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">Menos tiempo en el lavadero. Más dinero en tu cuenta bancaria.</div>
+                    </div>
+                    <div class="cta-box">PEDIR KIT COMPLETO</div>
+                    <div class="coherence-tag">🔗 Coherente con Value Stack</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 5: COMPARATIVA ESTRATÉGICA     -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">⚔️ COMPARATIVA ESTRATÉGICA</div>
+
+        <div class="brief-card">
+            <div class="brief-id">COMP-01</div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Tabla estilo infografía. Iconografía de "Lavadero" con billetes volando
+                            vs "OilShield" con una alcancía llenándose.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy Persuasivo</div>
+                        <div class="value copy">Un solo frasco de OilShield rinde por 4 meses de lavaderos. Tira el
+                            frasco, no el dinero.</div>
+                    </div>
+                    <div class="cta-box">EMPEZAR A AHORRAR Q1,200 AL AÑO</div>
+                    <div class="coherence-tag">🔗 Coherente con Tabla Comparativa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECCIÓN 6: RECAP Y CIERRE              -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="section-title">🚀 CIERRE EMOCIONAL Y RECAP</div>
+
+        <div class="brief-card">
+            <div class="brief-header">
+                <div class="brief-type">Resumen de Valor Final</div>
+                <div class="brief-id">RECAP-01</div>
+            </div>
+            <div class="grid">
+                <div>
+                    <div class="field">
+                        <div class="label">Idea Visual</div>
+                        <div class="visual-desc">Foto de un conductor sonriendo en su carro con el parabrisas impecable.
+                            Al lado, el producto y el texto "Pago al Recibir".</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="field">
+                        <div class="label">Copy en Imagen</div>
+                        <div class="value copy">Ya casi tienes tu visión HD. Tu bolsillo te lo agradecerá.</div>
+                    </div>
+                    <div class="cta-box">¡SÍ, QUIERO EMPEZAR A AHORRAR HOY!</div>
+                    <div class="coherence-tag">🔗 Coherente con Sección Recap Final</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Generado por Arquitecto Creativos · 2026-03-10
+        </div>
+    </div>
+</body>
+
+</html>
