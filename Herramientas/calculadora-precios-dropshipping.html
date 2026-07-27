@@ -508,6 +508,12 @@
                         <input type="number" id="exchangeRate" min="0" step="0.01" placeholder="0">
                         <small>Tasa referencial — actualízala según el tipo de cambio del día.</small>
                     </div>
+
+                    <div class="field full" id="adCostField">
+                        <label>Costo de publicidad (en pesos COP)</label>
+                        <input type="number" id="adCost" min="0" step="0.01" placeholder="0">
+                        <small id="adCostHelp">Se ingresa siempre en pesos colombianos (COP) y se convierte automáticamente a la moneda del país seleccionado.</small>
+                    </div>
                 </div>
 
                 <div class="btn-row">
@@ -516,8 +522,9 @@
                 </div>
 
                 <div class="formula-box">
-                    <strong>Fórmula:</strong> (Precio del producto + Flete) × (1 + % Devolución) × (1 + % Margen) = Precio de venta sugerido.
-                    Todos los valores (flete, % devolución, % margen y tasa de cambio) son independientes por país y quedan guardados automáticamente.
+                    <strong>Fórmula:</strong> (Precio del producto + Flete) × (1 + % Devolución) × (1 + % Margen) = PV Sugerido.
+                    Luego se le suma la <strong>publicidad</strong> (convertida de COP a la moneda del país) para obtener el <strong>PV Final</strong>.
+                    Todos los valores (flete, % devolución, % margen, tasa de cambio y publicidad) son independientes por país y quedan guardados automáticamente.
                 </div>
             </div>
 
@@ -535,13 +542,17 @@
                         <span class="value" id="stepReturn">—</span>
                     </div>
                     <div class="step-row">
-                        <span class="label">4. × Margen de ganancia</span>
+                        <span class="label">4. × Margen = PV Sugerido</span>
                         <span class="value" id="stepMargin">—</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="label" id="stepAdLabel">5. + Publicidad</span>
+                        <span class="value" id="stepAd">—</span>
                     </div>
                 </div>
 
                 <div class="result-final">
-                    <div class="label">Precio de venta sugerido</div>
+                    <div class="label">Precio de venta final (incluye publicidad)</div>
                     <div class="value" id="finalPrice">—</div>
                     <div class="converted" id="convertedRow" style="display:none;">
                         ≈ <strong id="convertedPrice">—</strong> COP
@@ -564,8 +575,10 @@
                             <th>Flete</th>
                             <th>% Dev.</th>
                             <th>% Margen</th>
+                            <th>Publicidad</th>
                             <th>PV Sugerido</th>
-                            <th>PV en COP</th>
+                            <th>PV Final</th>
+                            <th>PV Final en COP</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -594,9 +607,9 @@
         };
 
         const DEFAULT_CONFIG = {
-            CO: { shipping: 12000, returnPct: 15, marginPct: 50, rate: 1 },
-            CR: { shipping: 4000, returnPct: 25, marginPct: 50, rate: 8.5 },
-            GT: { shipping: 35, returnPct: 12, marginPct: 50, rate: 555 },
+            CO: { shipping: 12000, returnPct: 15, marginPct: 50, rate: 1, adCost: 0 },
+            CR: { shipping: 4000, returnPct: 25, marginPct: 50, rate: 8.5, adCost: 0 },
+            GT: { shipping: 35, returnPct: 12, marginPct: 50, rate: 555, adCost: 0 },
         };
 
         let config = loadConfig();
@@ -605,11 +618,16 @@
         let editingId = null;
 
         function loadConfig() {
+            const defaults = structuredClone(DEFAULT_CONFIG);
             try {
                 const stored = JSON.parse(localStorage.getItem(CONFIG_KEY));
-                if (stored) return { ...structuredClone(DEFAULT_CONFIG), ...stored };
+                if (stored) {
+                    Object.keys(defaults).forEach(code => {
+                        defaults[code] = { ...defaults[code], ...(stored[code] || {}) };
+                    });
+                }
             } catch (e) { }
-            return structuredClone(DEFAULT_CONFIG);
+            return defaults;
         }
 
         function saveConfig() {
@@ -647,6 +665,8 @@
         const exchangeRate = el('exchangeRate');
         const rateField = el('rateField');
         const rateLabel = el('rateLabel');
+        const adCost = el('adCost');
+        const adCostHelp = el('adCostHelp');
         const currencyTag = el('currencyTag');
         const historyCountryTag = el('historyCountryTag');
         const brandLabel = el('brandLabel');
@@ -673,6 +693,7 @@
             returnPct.value = cfg.returnPct;
             marginPct.value = cfg.marginPct;
             exchangeRate.value = cfg.rate;
+            adCost.value = cfg.adCost;
             productName.value = '';
             productPrice.value = '';
 
@@ -680,6 +701,10 @@
             rateLabel.textContent = info.needsConversion
                 ? `Tasa de cambio: 1 ${info.currency} = ___ COP`
                 : '';
+
+            adCostHelp.textContent = info.needsConversion
+                ? `Se ingresa siempre en pesos colombianos (COP) y se convierte automáticamente a ${info.currency} con la tasa de cambio de arriba.`
+                : 'Este valor ya está en pesos colombianos (COP), la moneda de Colombia.';
 
             renderHistory();
             calculate();
@@ -691,6 +716,7 @@
             cfg.returnPct = parseFloat(returnPct.value) || 0;
             cfg.marginPct = parseFloat(marginPct.value) || 0;
             cfg.rate = parseFloat(exchangeRate.value) || 0;
+            cfg.adCost = parseFloat(adCost.value) || 0;
             saveConfig();
         }
 
@@ -701,25 +727,34 @@
             const ret = parseFloat(returnPct.value) || 0;
             const margin = parseFloat(marginPct.value) || 0;
             const rate = parseFloat(exchangeRate.value) || 0;
+            const adCOP = parseFloat(adCost.value) || 0;
 
             const sum = price + shipping;
             const afterReturn = sum * (1 + ret / 100);
-            const finalPriceLocal = afterReturn * (1 + margin / 100);
+            const suggestedLocal = afterReturn * (1 + margin / 100);
+
+            // La publicidad siempre se ingresa en COP; se convierte a la moneda local del país.
+            const adLocal = info.needsConversion ? (rate > 0 ? adCOP / rate : 0) : adCOP;
+            const finalLocal = suggestedLocal + adLocal;
 
             el('stepSum').textContent = fmtMoney(sum, info.currency, info.locale);
             el('stepReturn').textContent = fmtMoney(afterReturn, info.currency, info.locale);
-            el('stepMargin').textContent = fmtMoney(finalPriceLocal, info.currency, info.locale);
-            el('finalPrice').textContent = fmtMoney(finalPriceLocal, info.currency, info.locale);
+            el('stepMargin').textContent = fmtMoney(suggestedLocal, info.currency, info.locale);
+            el('stepAdLabel').textContent = info.needsConversion
+                ? `5. + Publicidad (${fmtCOP(adCOP)} convertidos)`
+                : '5. + Publicidad';
+            el('stepAd').textContent = fmtMoney(adLocal, info.currency, info.locale);
+            el('finalPrice').textContent = fmtMoney(finalLocal, info.currency, info.locale);
 
             const convertedRow = el('convertedRow');
             if (info.needsConversion) {
                 convertedRow.style.display = 'block';
-                el('convertedPrice').textContent = fmtCOP(finalPriceLocal * rate).replace('COP', '').trim();
+                el('convertedPrice').textContent = fmtCOP(finalLocal * rate).replace('COP', '').trim();
             } else {
                 convertedRow.style.display = 'none';
             }
 
-            return { price, shipping, ret, margin, rate, sum, afterReturn, finalPriceLocal };
+            return { price, shipping, ret, margin, rate, adCOP, adLocal, sum, afterReturn, suggestedLocal, finalLocal };
         }
 
         function renderHistory() {
@@ -742,7 +777,9 @@
                     <td>${fmtMoney(item.shipping, info.currency, info.locale)}</td>
                     <td>${item.ret}%</td>
                     <td>${item.margin}%</td>
-                    <td class="final-cell">${fmtMoney(item.finalPriceLocal, info.currency, info.locale)}</td>
+                    <td>${fmtMoney(item.adLocal, info.currency, info.locale)}</td>
+                    <td>${fmtMoney(item.suggestedLocal, info.currency, info.locale)}</td>
+                    <td class="final-cell">${fmtMoney(item.finalLocal, info.currency, info.locale)}</td>
                     <td>${item.needsConversion ? fmtCOP(item.finalPriceCOP) : '—'}</td>
                     <td>
                         <div class="actions-cell">
@@ -787,9 +824,12 @@
                 ret: calc.ret,
                 margin: calc.margin,
                 rate: calc.rate,
-                finalPriceLocal: calc.finalPriceLocal,
+                adCOP: calc.adCOP,
+                adLocal: calc.adLocal,
+                suggestedLocal: calc.suggestedLocal,
+                finalLocal: calc.finalLocal,
                 needsConversion: info.needsConversion,
-                finalPriceCOP: info.needsConversion ? calc.finalPriceLocal * calc.rate : null,
+                finalPriceCOP: info.needsConversion ? calc.finalLocal * calc.rate : null,
                 createdAt: editingId ? (history.find(h => h.id === editingId) || {}).createdAt || Date.now() : Date.now(),
             };
 
@@ -821,6 +861,7 @@
             returnPct.value = item.ret;
             marginPct.value = item.margin;
             exchangeRate.value = item.rate;
+            adCost.value = item.adCOP;
 
             calculate();
             productName.focus();
@@ -843,11 +884,11 @@
             tab.addEventListener('click', () => switchCountry(tab.dataset.country));
         });
 
-        [productPrice, shippingCost, returnPct, marginPct, exchangeRate].forEach(input => {
+        [productPrice, shippingCost, returnPct, marginPct, exchangeRate, adCost].forEach(input => {
             input.addEventListener('input', calculate);
         });
 
-        [shippingCost, returnPct, marginPct, exchangeRate].forEach(input => {
+        [shippingCost, returnPct, marginPct, exchangeRate, adCost].forEach(input => {
             input.addEventListener('change', persistFieldToConfig);
         });
 
