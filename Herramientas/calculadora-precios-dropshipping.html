@@ -354,6 +354,16 @@
             color: var(--white);
         }
 
+        .result-final.profit-box {
+            margin-top: 18px;
+            border-color: var(--green);
+            box-shadow: 0 8px 24px var(--green-glow);
+        }
+
+        .result-final.profit-box .value {
+            color: var(--green);
+        }
+
         /* ── HISTORY TABLE ── */
         .table-wrap {
             overflow-x: auto;
@@ -558,6 +568,14 @@
                         ≈ <strong id="convertedPrice">—</strong> COP
                     </div>
                 </div>
+
+                <div class="result-final profit-box">
+                    <div class="label">Utilidad neta en pesos colombianos (COP)</div>
+                    <div class="value" id="profitCOP">—</div>
+                    <div class="converted" id="profitLocalRow" style="display:none;">
+                        = <strong id="profitLocal">—</strong> en moneda local
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -579,6 +597,7 @@
                             <th>PV Sugerido</th>
                             <th>PV Final</th>
                             <th>PV Final en COP</th>
+                            <th>Utilidad neta (COP)</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -754,7 +773,22 @@
                 convertedRow.style.display = 'none';
             }
 
-            return { price, shipping, ret, margin, rate, adCOP, adLocal, sum, afterReturn, suggestedLocal, finalLocal };
+            // Utilidad neta: lo que queda del PV Final tras cubrir producto, flete,
+            // provisión de devolución y publicidad (la publicidad se traslada 1 a 1 al precio,
+            // así que no afecta la utilidad; el margen sí queda protegido).
+            const profitLocal = suggestedLocal - afterReturn;
+            const profitCOP = info.needsConversion ? profitLocal * rate : profitLocal;
+
+            el('profitCOP').textContent = fmtCOP(profitCOP);
+            const profitLocalRow = el('profitLocalRow');
+            if (info.needsConversion) {
+                profitLocalRow.style.display = 'block';
+                el('profitLocal').textContent = fmtMoney(profitLocal, info.currency, info.locale);
+            } else {
+                profitLocalRow.style.display = 'none';
+            }
+
+            return { price, shipping, ret, margin, rate, adCOP, adLocal, sum, afterReturn, suggestedLocal, finalLocal, profitLocal, profitCOP };
         }
 
         function renderHistory() {
@@ -781,6 +815,7 @@
                     <td>${fmtMoney(item.suggestedLocal, info.currency, info.locale)}</td>
                     <td class="final-cell">${fmtMoney(item.finalLocal, info.currency, info.locale)}</td>
                     <td>${item.needsConversion ? fmtCOP(item.finalPriceCOP) : '—'}</td>
+                    <td style="color:var(--green);font-weight:700;">${fmtCOP(item.profitCOP)}</td>
                     <td>
                         <div class="actions-cell">
                             <button class="btn-edit" data-edit="${item.id}">Editar</button>
@@ -830,6 +865,7 @@
                 finalLocal: calc.finalLocal,
                 needsConversion: info.needsConversion,
                 finalPriceCOP: info.needsConversion ? calc.finalLocal * calc.rate : null,
+                profitCOP: calc.profitCOP,
                 createdAt: editingId ? (history.find(h => h.id === editingId) || {}).createdAt || Date.now() : Date.now(),
             };
 
