@@ -276,6 +276,7 @@
             font-size: .85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-decoration: none;
         }
 
         .card-link.hunter-color {
@@ -392,7 +393,7 @@
             </a>
 
             <!-- AUDITOR -->
-            <a class="agent-card auditor" href="Auditor Financiero/reporte_auditor_oilshield_gt.html">
+            <div class="agent-card auditor" style="cursor:default;">
                 <div class="card-body">
                     <div class="card-icon">💰</div>
                     <div class="card-title">Auditor Financiero</div>
@@ -413,9 +414,14 @@
                     </div>
                     <p class="card-desc">Desglose de costos, precios aprobados por paquete,
                         3 escenarios de rentabilidad y veredicto financiero.</p>
-                    <span class="card-link auditor-color">Ver reporte completo →</span>
+                    <a class="card-link auditor-color" href="Auditor Financiero/reporte_auditor_oilshield_gt.html">Ver reporte completo →</a>
+                    <div class="sub-links">
+                        <a class="sub-link" href="Auditor Financiero/costeo_proyecciones_multipais.html"
+                            style="border-color:var(--gold); color:var(--gold);">🌎 Costeo &amp; Proyecciones
+                            Multi-País (interactivo)</a>
+                    </div>
                 </div>
-            </a>
+            </div>
 
             <!-- AVATAR -->
             <a class="agent-card avatar" href="Arquitecto Avatar/reporte_avatares_oilshield_gt.html">
