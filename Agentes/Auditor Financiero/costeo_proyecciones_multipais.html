@@ -386,6 +386,117 @@
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
             font-size: .92rem;
+            min-width: 0;
+        }
+
+        .sku-head .oferta-mini {
+            flex: 0 0 62px;
+            text-align: center;
+            font-weight: 700;
+            padding: 7px 4px;
+        }
+
+        .sku-head .tipo-mini {
+            flex: 0 0 88px;
+            padding: 7px 4px;
+            font-size: .78rem;
+        }
+
+        @media (max-width: 480px) {
+            .sku-head { flex-wrap: wrap; }
+            .sku-head input[type="text"]:first-child { flex: 1 1 100%; }
+        }
+
+        /* Offer groups */
+        .offer-group {
+            margin-bottom: 26px;
+        }
+
+        .offer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .offer-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: .95rem;
+            background: rgba(243, 156, 18, .15);
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .offer-header h3 {
+            font-size: 1.05rem;
+        }
+
+        .profit-summary {
+            margin-top: 16px;
+            background: rgba(45, 212, 191, .05);
+            border: 1px solid rgba(45, 212, 191, .25);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+        }
+
+        .profit-summary h4 {
+            font-size: .9rem;
+            margin-bottom: 4px;
+            color: var(--aqua);
+        }
+
+        .profit-table {
+            margin-top: 8px;
+        }
+
+        .profit-row {
+            display: grid;
+            grid-template-columns: 56px repeat(3, 1fr);
+            gap: 10px;
+            align-items: center;
+            padding: 9px 0;
+            border-top: 1px dashed var(--card-border);
+        }
+
+        .profit-row:first-child {
+            border-top: none;
+        }
+
+        .profit-row-head .pcol-label {
+            font-size: .64rem;
+        }
+
+        .profit-row .tag {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: .85rem;
+            color: var(--white);
+        }
+
+        .pcol-label {
+            font-size: .66rem;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text-muted);
+        }
+
+        .pcol-value {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: .9rem;
+            color: var(--white);
+        }
+
+        @media (max-width: 640px) {
+            .profit-row { grid-template-columns: 44px repeat(3, 1fr); gap: 6px; }
+            .pcol-value { font-size: .78rem; }
         }
 
         .sku-remove {
@@ -755,14 +866,14 @@ function defaultState() {
             ventasEstimadasMes: 200,
         },
         skus: [
-            { id:1, nombre:'Plantilla Acupuntura X1 (Oferta A)', precioVenta:113600, aov:113600.56, costoProducto:32000, fulfillment:0, margenObj:25, esUpsell:false },
-            { id:2, nombre:'Plantilla Acupuntura X2 (Oferta A)', precioVenta:181760.90, aov:181760.90, costoProducto:64000, fulfillment:0, margenObj:25, esUpsell:false },
-            { id:3, nombre:'Plantilla Acupuntura X3 (Oferta A)', precioVenta:238561.18, aov:238561.18, costoProducto:96000, fulfillment:0, margenObj:25, esUpsell:false },
-            { id:4, nombre:'Plantilla Acupuntura X1 (Oferta B)', precioVenta:79900, aov:79900, costoProducto:32000, fulfillment:0, margenObj:13, esUpsell:false },
-            { id:5, nombre:'Plantilla Acupuntura X2 (Oferta B)', precioVenta:127840, aov:127840, costoProducto:64000, fulfillment:0, margenObj:13, esUpsell:false },
-            { id:6, nombre:'Plantilla Acupuntura X3 (Oferta B)', precioVenta:167790, aov:167790, costoProducto:96000, fulfillment:0, margenObj:13, esUpsell:false },
-            { id:7, nombre:'Upsell post-compra (Oferta B)', precioVenta:39950, aov:39950, costoProducto:32000, fulfillment:0, margenObj:19.9, esUpsell:true },
-            { id:8, nombre:'Upsell post-compra (Oferta A)', precioVenta:39950, aov:56800.28, costoProducto:32000, fulfillment:0, margenObj:43.7, esUpsell:true },
+            { id:1, nombre:'Plantilla Acupuntura X1', oferta:'A', tipo:'x1', precioVenta:113600, aov:113600.56, costoProducto:32000, fulfillment:0, margenObj:25 },
+            { id:2, nombre:'Plantilla Acupuntura X2', oferta:'A', tipo:'x2', precioVenta:181760.90, aov:181760.90, costoProducto:64000, fulfillment:0, margenObj:25 },
+            { id:3, nombre:'Plantilla Acupuntura X3', oferta:'A', tipo:'x3', precioVenta:238561.18, aov:238561.18, costoProducto:96000, fulfillment:0, margenObj:25 },
+            { id:8, nombre:'Upsell post-compra', oferta:'A', tipo:'upsell', precioVenta:39950, aov:56800.28, costoProducto:32000, fulfillment:0, margenObj:43.7 },
+            { id:4, nombre:'Plantilla Acupuntura X1', oferta:'B', tipo:'x1', precioVenta:79900, aov:79900, costoProducto:32000, fulfillment:0, margenObj:13 },
+            { id:5, nombre:'Plantilla Acupuntura X2', oferta:'B', tipo:'x2', precioVenta:127840, aov:127840, costoProducto:64000, fulfillment:0, margenObj:13 },
+            { id:6, nombre:'Plantilla Acupuntura X3', oferta:'B', tipo:'x3', precioVenta:167790, aov:167790, costoProducto:96000, fulfillment:0, margenObj:13 },
+            { id:7, nombre:'Upsell post-compra', oferta:'B', tipo:'upsell', precioVenta:39950, aov:39950, costoProducto:32000, fulfillment:0, margenObj:19.9 },
         ],
         nextSkuId: 9,
         selectedSkuId: 1,
@@ -817,10 +928,14 @@ function computeGlobals(c) {
     return { costoDevolucionUnidad, operativoUnidad };
 }
 
+const TIPO_LABELS = { x1: 'X1', x2: 'X2', x3: 'X3', upsell: 'Upsell', otro: 'Otro' };
+const TIPO_ORDER = { x1: 0, x2: 1, x3: 2, upsell: 3, otro: 4 };
+
 function computeSku(sku, g, costeo) {
-    const devoluciones = sku.esUpsell ? 0 : g.costoDevolucionUnidad;
-    const operativos = sku.esUpsell ? 0 : g.operativoUnidad;
-    const envio = sku.esUpsell ? 0 : costeo.costoEnvioEstandar;
+    const esUpsell = sku.tipo === 'upsell';
+    const devoluciones = esUpsell ? 0 : g.costoDevolucionUnidad;
+    const operativos = esUpsell ? 0 : g.operativoUnidad;
+    const envio = esUpsell ? 0 : costeo.costoEnvioEstandar;
     const costoTotal = sku.costoProducto + devoluciones + operativos + envio + sku.fulfillment;
     const pctCostoAov = sku.aov ? costoTotal / sku.aov : 0;
     const beneficioCombustible = sku.aov - costoTotal;
@@ -835,6 +950,36 @@ function computeCosteo() {
     const g = computeGlobals(state.costeo);
     const skus = state.skus.map(s => computeSku(s, g, state.costeo));
     return { g, skus };
+}
+
+/** Agrupa los SKU calculados por su campo "oferta" (A, B, ...), en orden de aparición,
+ *  y ordena cada grupo x1 → x2 → x3 → upsell → otro. */
+function groupSkusByOferta(skus) {
+    const map = new Map();
+    skus.forEach(s => {
+        const key = s.oferta || 'Sin agrupar';
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(s);
+    });
+    return Array.from(map.entries()).map(([oferta, items]) => {
+        items.sort((a, b) => (TIPO_ORDER[a.tipo] ?? 4) - (TIPO_ORDER[b.tipo] ?? 4));
+        return { oferta, items };
+    });
+}
+
+/** Para un grupo (oferta), calcula cuánto se gana con cada paquete (x1/x2/x3)
+ *  con y sin el upsell del mismo grupo. "Ganancia" = Objetivo Neto $ (el margen
+ *  que te queda una vez pagado hasta el CPA objetivo en pauta). */
+function computeOfferProfitSummary(group) {
+    const upsell = group.items.find(s => s.tipo === 'upsell');
+    const paquetes = group.items.filter(s => s.tipo === 'x1' || s.tipo === 'x2' || s.tipo === 'x3');
+    return paquetes.map(p => ({
+        tipo: p.tipo,
+        nombre: p.nombre,
+        sinUpsell: p.objetivoNeto,
+        conUpsell: upsell ? p.objetivoNeto + upsell.objetivoNeto : null,
+        upsellGanancia: upsell ? upsell.objetivoNeto : null,
+    }));
 }
 
 function computeProyecciones() {
@@ -958,24 +1103,53 @@ function svgEl(tag, attrs) {
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
 /* ============================== RENDER: COSTEO ============================== */
+function profitSummaryHTML(group) {
+    const rows = computeOfferProfitSummary(group);
+    if (!rows.length) return '';
+    const hasUpsell = rows.some(r => r.conUpsell !== null);
+    return `
+    <div class="profit-summary">
+        <h4>💵 ¿Cuánto ganas con la Oferta ${esc(group.oferta)}?</h4>
+        <p style="font-size:.78rem;color:var(--text-muted);margin:-6px 0 10px;">"Ganancia" = Objetivo Neto $ — lo que te queda una vez pagado hasta el CPA objetivo en pauta.</p>
+        <div class="profit-table">
+            <div class="profit-row profit-row-head">
+                <div></div>
+                <div class="pcol-label">Sin upsell</div>
+                ${hasUpsell ? `<div class="pcol-label">Con upsell</div><div class="pcol-label">+ por upsell</div>` : ''}
+            </div>
+            ${rows.map(r => `
+            <div class="profit-row">
+                <div class="tag">${TIPO_LABELS[r.tipo] || r.tipo}</div>
+                <div class="pcol-value">${money(r.sinUpsell)}</div>
+                ${hasUpsell ? `
+                <div class="pcol-value" style="color:var(--status-good);">${r.conUpsell !== null ? money(r.conUpsell) : '—'}</div>
+                <div class="pcol-value" style="color:var(--aqua);">${r.upsellGanancia !== null ? '+ ' + money(r.upsellGanancia) : '—'}</div>` : ''}
+            </div>`).join('')}
+        </div>
+    </div>`;
+}
+
 function renderCosteo() {
     const { g, skus } = computeCosteo();
     const c = state.costeo;
     const el = document.getElementById('panel-costeo');
+    const groups = groupSkusByOferta(skus);
+    const orderedSkus = groups.flatMap(grp => grp.items);
 
-    const maxAov = Math.max(1, ...skus.map(s => s.aov));
+    const maxAov = Math.max(1, ...orderedSkus.map(s => s.aov));
     const barChartW = 480, rowH = 34, chartTop = 10;
     let barsSvg = '';
-    skus.forEach((s, i) => {
+    orderedSkus.forEach((s, i) => {
         const y = chartTop + i * rowH;
         const costoW = Math.max(0, (s.costoTotal / maxAov) * barChartW);
         const benW = Math.max(0, (s.beneficioCombustible / maxAov) * barChartW);
-        barsSvg += `<text x="0" y="${y + 14}" class="axis-label" font-size="10">${esc(s.nombre.length > 26 ? s.nombre.slice(0,25)+'…' : s.nombre)}</text>`;
+        const label = `${s.nombre} (${s.oferta})`;
+        barsSvg += `<text x="0" y="${y + 14}" class="axis-label" font-size="10">${esc(label.length > 28 ? label.slice(0,27)+'…' : label)}</text>`;
         barsSvg += `<rect x="230" y="${y}" width="${costoW}" height="16" fill="var(--series-1)" rx="3"></rect>`;
         barsSvg += `<rect x="${230+costoW+2}" y="${y}" width="${benW}" height="16" fill="var(--series-3)" rx="3"></rect>`;
         barsSvg += `<text x="${230+costoW+benW+8}" y="${y+13}" font-size="10" fill="var(--text-muted)">${moneyCompact(s.aov)}</text>`;
     });
-    const chartH = chartTop + skus.length * rowH + 10;
+    const chartH = chartTop + orderedSkus.length * rowH + 10;
 
     const sel = skus.find(s => s.id === state.selectedSkuId) || skus[0];
     const segs = [
@@ -1024,11 +1198,12 @@ function renderCosteo() {
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
                 <div>
                     <h2 class="sub" style="margin-bottom:2px;">Productos / Ofertas</h2>
-                    <p class="sub-desc" style="margin-bottom:0;">Cada tarjeta es un SKU u oferta (x1, x2, x3, upsells). Marca "Es upsell" para paquetes post-compra sin costo adicional de envío/devolución/operativo.</p>
+                    <p class="sub-desc" style="margin-bottom:0;">Agrupados por Oferta (A, B, ...). Cada oferta muestra sus paquetes X1 → X2 → X3 y su upsell, seguidos de un resumen de cuánto ganas en cada caso.
+                        Cambia el campo "Oferta" de una tarjeta para moverla de grupo, y "Tipo" para marcarla como X1/X2/X3/Upsell/Otro.</p>
                 </div>
                 <button class="btn primary" id="btn-add-sku">+ Agregar SKU</button>
             </div>
-            <div class="grid cols-2" id="sku-cards"></div>
+            <div id="sku-groups"></div>
         </div>
 
         <div class="chart-card">
@@ -1074,18 +1249,31 @@ function renderCosteo() {
     bindInput('operativos-mensuales', v => { state.costeo.operativosMensuales = parseMoneyInput(v); renderAll(); });
     bindInput('ventas-estimadas-mes', v => { state.costeo.ventasEstimadasMes = parseNum(v); renderAll(); });
 
-    // SKU cards
-    const skuWrap = document.getElementById('sku-cards');
-    skuWrap.innerHTML = skus.map(s => skuCardHTML(s)).join('');
+    // SKU cards, grouped by Oferta
+    const groupsWrap = document.getElementById('sku-groups');
+    groupsWrap.innerHTML = groups.map(grp => `
+        <div class="offer-group">
+            <div class="offer-header">
+                <div class="offer-badge">${esc((grp.oferta || '?').slice(0, 2).toUpperCase())}</div>
+                <div>
+                    <h3 style="margin:0;">Oferta ${esc(grp.oferta)}</h3>
+                    <p style="margin:0;font-size:.78rem;color:var(--text-muted);">${grp.items.length} SKU${grp.items.length !== 1 ? 's' : ''}</p>
+                </div>
+            </div>
+            <div class="grid cols-2">${grp.items.map(s => skuCardHTML(s)).join('')}</div>
+            ${profitSummaryHTML(grp)}
+        </div>
+    `).join('');
     skus.forEach(s => bindSkuCard(s.id));
     document.getElementById('btn-add-sku').onclick = () => {
-        state.skus.push({ id: state.nextSkuId++, nombre: 'Nuevo SKU', precioVenta: 50000, aov: 50000, costoProducto: 20000, fulfillment: 0, margenObj: 20, esUpsell: false });
+        const lastOferta = state.skus.length ? state.skus[state.skus.length - 1].oferta : 'A';
+        state.skus.push({ id: state.nextSkuId++, nombre: 'Nuevo SKU', oferta: lastOferta || 'A', tipo: 'otro', precioVenta: 50000, aov: 50000, costoProducto: 20000, fulfillment: 0, margenObj: 20 });
         renderCosteo();
     };
 
     // Breakdown selector
     const bsel = document.getElementById('sku-breakdown-select');
-    bsel.innerHTML = skus.map(s => `<option value="${s.id}" ${s.id === sel.id ? 'selected' : ''}>${esc(s.nombre)}</option>`).join('');
+    bsel.innerHTML = orderedSkus.map(s => `<option value="${s.id}" ${s.id === sel.id ? 'selected' : ''}>${esc(s.nombre)} (Oferta ${esc(s.oferta)})</option>`).join('');
     bsel.onchange = () => { state.selectedSkuId = parseInt(bsel.value, 10); renderCosteo(); };
     document.getElementById('breakdown-legend').innerHTML = segs.map(sgm =>
         `<span><span class="dot" style="background:${sgm.color}"></span>${sgm.label}: ${money(sgm.v)} (${fmtPct1(sgm.v/totalSeg*100)})</span>`
@@ -1094,12 +1282,13 @@ function renderCosteo() {
     // Full table
     document.getElementById('costeo-table').innerHTML = `
         <thead><tr>
-            <th>Producto</th><th>Precio Venta</th><th>AOV</th><th>Costo Prod.</th><th>% Costo Prod</th>
+            <th>Oferta</th><th>Tipo</th><th>Producto</th><th>Precio Venta</th><th>AOV</th><th>Costo Prod.</th><th>% Costo Prod</th>
             <th>Devol.</th><th>Operativos</th><th>Envío</th><th>Fulfillment</th><th>Costo Total</th>
             <th>% Costo/AOV</th><th>Beneficio Comb.</th><th>Margen Obj%</th><th>Objetivo Neto</th>
             <th>CPA Objetivo</th><th>ROAS Obj.</th><th>% Pauta</th>
         </tr></thead>
-        <tbody>${skus.map(s => `<tr>
+        <tbody>${orderedSkus.map(s => `<tr>
+            <td>${esc(s.oferta)}</td><td>${TIPO_LABELS[s.tipo] || s.tipo || ''}</td>
             <td>${esc(s.nombre)}</td><td>${fmtLocalOrCop(s.precioVenta)}</td><td>${fmtLocalOrCop(s.aov)}</td>
             <td>${fmtLocalOrCop(s.costoProducto)}</td><td>${fmtPct1(s.aov ? s.costoProducto/s.aov*100 : 0)}</td>
             <td>${fmtLocalOrCop(s.devoluciones)}</td><td>${fmtLocalOrCop(s.operativos)}</td>
@@ -1134,15 +1323,22 @@ function bindInput(id, handler) {
 }
 
 function skuCardHTML(s) {
+    const esUpsell = s.tipo === 'upsell';
     return `
-    <div class="sku-card ${s.esUpsell ? 'upsell' : ''}" data-sku="${s.id}">
+    <div class="sku-card ${esUpsell ? 'upsell' : ''}" data-sku="${s.id}">
         <div class="sku-head">
             <input type="text" id="sku-${s.id}-nombre" value="${esc(s.nombre)}">
+            <input type="text" id="sku-${s.id}-oferta" value="${esc(s.oferta || '')}" placeholder="Oferta" title="Grupo / Oferta" class="oferta-mini">
+            <select id="sku-${s.id}-tipo" title="Tipo de paquete" class="tipo-mini">
+                <option value="x1" ${s.tipo==='x1'?'selected':''}>X1</option>
+                <option value="x2" ${s.tipo==='x2'?'selected':''}>X2</option>
+                <option value="x3" ${s.tipo==='x3'?'selected':''}>X3</option>
+                <option value="upsell" ${s.tipo==='upsell'?'selected':''}>Upsell</option>
+                <option value="otro" ${!s.tipo||s.tipo==='otro'?'selected':''}>Otro</option>
+            </select>
             <button class="sku-remove" data-remove="${s.id}" title="Eliminar SKU">✕</button>
         </div>
-        <label style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text-muted);margin-bottom:12px;">
-            <input type="checkbox" id="sku-${s.id}-upsell" ${s.esUpsell ? 'checked' : ''}> Es upsell (sin costo de envío/devolución/operativo)
-        </label>
+        ${esUpsell ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🔁 Upsell: sin costo de envío, devolución ni operativo (va en el mismo pedido).</p>` : ''}
         <div class="sku-row">
             <div class="input-field"><label>Precio Venta</label><input type="number" id="sku-${s.id}-precioVenta" value="${inputMoneyValue(s.precioVenta)}" step="any"></div>
             <div class="input-field"><label>AOV</label><input type="number" id="sku-${s.id}-aov" value="${inputMoneyValue(s.aov)}" step="any"></div>
@@ -1165,7 +1361,8 @@ function skuCardHTML(s) {
 function bindSkuCard(id) {
     const g = (suffix) => document.getElementById(`sku-${id}-${suffix}`);
     g('nombre').addEventListener('change', () => { getSku(id).nombre = g('nombre').value; renderCosteo(); });
-    g('upsell').addEventListener('change', () => { getSku(id).esUpsell = g('upsell').checked; renderCosteo(); });
+    g('oferta').addEventListener('change', () => { getSku(id).oferta = g('oferta').value.trim() || 'A'; renderCosteo(); });
+    g('tipo').addEventListener('change', () => { getSku(id).tipo = g('tipo').value; renderAll(); });
     g('precioVenta').addEventListener('change', () => { getSku(id).precioVenta = parseMoneyInput(g('precioVenta').value); renderAll(); });
     g('aov').addEventListener('change', () => { getSku(id).aov = parseMoneyInput(g('aov').value); renderAll(); });
     g('costoProducto').addEventListener('change', () => { getSku(id).costoProducto = parseMoneyInput(g('costoProducto').value); renderAll(); });
