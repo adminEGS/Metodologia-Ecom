@@ -313,6 +313,17 @@
             margin-top: 2px;
         }
 
+        .input-field .auto-value {
+            width: 100%;
+            border: 1px solid rgba(243, 156, 18, .35);
+            background: rgba(243, 156, 18, .06);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
         .editable-badge {
             display: inline-block;
             font-size: .62rem;
@@ -877,6 +888,7 @@ function defaultState() {
         ],
         nextSkuId: 9,
         selectedSkuId: 1,
+        ofertaMultiplicadores: {},
         proyecciones: {
             inversionAds: 800000,
             ticketPromedio: 63900,
@@ -949,9 +961,38 @@ function computeSku(sku, g, costeo) {
     return { ...sku, devoluciones, operativos, envio, costoTotal, pctCostoAov, beneficioCombustible, objetivoNeto, cpaObjetivo, roasObjetivo, pctPauta, margenInalcanzable };
 }
 
+/** Multiplicador de AOV sobre el Costo Total del X1 de una oferta: 2x por defecto en la
+ *  Oferta "A", 1.4x en cualquier otra — editable por oferta vía state.ofertaMultiplicadores. */
+function getOfertaMultiplier(oferta) {
+    if (state.ofertaMultiplicadores[oferta] !== undefined) return state.ofertaMultiplicadores[oferta];
+    return (oferta || '').trim().toUpperCase() === 'A' ? 2 : 1.4;
+}
+
 function computeCosteo() {
     const g = computeGlobals(state.costeo);
-    const skus = state.skus.map(s => computeSku(s, g, state.costeo));
+    // Paso 1: costos (el Costo Total no depende del AOV, así que este primer paso ya es válido).
+    let skus = state.skus.map(s => computeSku(s, g, state.costeo));
+
+    // Paso 2: automatiza el AOV de los paquetes x1/x2/x3 por oferta.
+    // AOV x1 = Costo Total x1 × multiplicador. AOV x2 = AOV x1 × 2 × 0.8. AOV x3 = AOV x1 × 3 × 0.7.
+    const groupsForAov = groupSkusByOferta(skus);
+    const aovOverrides = {};
+    groupsForAov.forEach(grp => {
+        const x1 = grp.items.find(i => i.tipo === 'x1');
+        if (!x1) return;
+        const aovX1 = x1.costoTotal * getOfertaMultiplier(grp.oferta);
+        aovOverrides[x1.id] = aovX1;
+        const x2 = grp.items.find(i => i.tipo === 'x2');
+        if (x2) aovOverrides[x2.id] = aovX1 * 2 * 0.8;
+        const x3 = grp.items.find(i => i.tipo === 'x3');
+        if (x3) aovOverrides[x3.id] = aovX1 * 3 * 0.7;
+    });
+
+    // Paso 3: recalcula con el AOV automático (afecta % costo/AOV, beneficio, CPA, ROAS...).
+    skus = state.skus.map(s => {
+        const overrideAov = aovOverrides[s.id];
+        return computeSku(overrideAov !== undefined ? { ...s, aov: overrideAov } : s, g, state.costeo);
+    });
     return { g, skus };
 }
 
@@ -1315,16 +1356,27 @@ function renderCosteo() {
         <div class="offer-group">
             <div class="offer-header">
                 <div class="offer-badge">${esc((grp.oferta || '?').slice(0, 2).toUpperCase())}</div>
-                <div>
+                <div style="flex:1;">
                     <h3 style="margin:0;">Oferta ${esc(grp.oferta)}</h3>
                     <p style="margin:0;font-size:.78rem;color:var(--text-muted);">${grp.items.length} SKU${grp.items.length !== 1 ? 's' : ''}</p>
                 </div>
+                <div class="input-field" style="max-width:170px;">
+                    <label>Multiplicador AOV (x1)<span class="editable-badge">editable</span></label>
+                    <input type="number" class="oferta-mult-input" data-oferta="${esc(grp.oferta)}" value="${getOfertaMultiplier(grp.oferta)}" step="0.1" min="0">
+                </div>
             </div>
+            <p class="sub-desc" style="margin:-6px 0 14px;">AOV X1 = Costo Total × ${fmtDec(getOfertaMultiplier(grp.oferta),1)} · AOV X2 = AOV X1 × 2 × 0.8 · AOV X3 = AOV X1 × 3 × 0.7</p>
             <div class="grid cols-2">${grp.items.map(s => skuCardHTML(s)).join('')}</div>
             ${profitSummaryHTML(grp)}
         </div>
     `).join('');
     skus.forEach(s => bindSkuCard(s.id));
+    document.querySelectorAll('.oferta-mult-input').forEach(inp => {
+        inp.addEventListener('change', () => {
+            state.ofertaMultiplicadores[inp.dataset.oferta] = parseFloat(inp.value) || 0;
+            renderCosteo();
+        });
+    });
     document.getElementById('btn-add-sku').onclick = () => {
         const lastOferta = state.skus.length ? state.skus[state.skus.length - 1].oferta : 'A';
         state.skus.push({ id: state.nextSkuId++, nombre: 'Nuevo SKU', oferta: lastOferta || 'A', tipo: 'otro', precioVenta: 50000, aov: 50000, costoProducto: 20000, fulfillment: 0, margenObj: 20 });
@@ -1384,6 +1436,11 @@ function bindInput(id, handler) {
 
 function skuCardHTML(s) {
     const esUpsell = s.tipo === 'upsell';
+    const aovAuto = s.tipo === 'x1' || s.tipo === 'x2' || s.tipo === 'x3';
+    const aovField = aovAuto
+        ? `<div class="input-field"><label>AOV <span class="editable-badge" style="background:rgba(243,156,18,.15);color:var(--gold);">auto</span></label>
+             <div class="auto-value">${moneyCompact(s.aov)}</div></div>`
+        : `<div class="input-field"><label>AOV</label><input type="number" id="sku-${s.id}-aov" value="${inputMoneyValue(s.aov)}" step="any"></div>`;
     return `
     <div class="sku-card ${esUpsell ? 'upsell' : ''}" data-sku="${s.id}">
         <div class="sku-head">
@@ -1399,9 +1456,10 @@ function skuCardHTML(s) {
             <button class="sku-remove" data-remove="${s.id}" title="Eliminar SKU">✕</button>
         </div>
         ${esUpsell ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🔁 Upsell: sin costo de envío, devolución ni operativo (va en el mismo pedido).</p>` : ''}
+        ${aovAuto ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🧮 AOV automático: ${s.tipo==='x1' ? 'Costo Total × multiplicador de la oferta' : `AOV de X1 × ${s.tipo==='x2'?'2 × 0.8':'3 × 0.7'}`}.</p>` : ''}
         <div class="sku-row">
             <div class="input-field"><label>Precio Venta</label><input type="number" id="sku-${s.id}-precioVenta" value="${inputMoneyValue(s.precioVenta)}" step="any"></div>
-            <div class="input-field"><label>AOV</label><input type="number" id="sku-${s.id}-aov" value="${inputMoneyValue(s.aov)}" step="any"></div>
+            ${aovField}
             <div class="input-field"><label>Costo Producto</label><input type="number" id="sku-${s.id}-costoProducto" value="${inputMoneyValue(s.costoProducto)}" step="any"></div>
             <div class="input-field"><label>Fulfillment</label><input type="number" id="sku-${s.id}-fulfillment" value="${inputMoneyValue(s.fulfillment)}" step="any"></div>
         </div>
@@ -1425,7 +1483,7 @@ function bindSkuCard(id) {
     g('oferta').addEventListener('change', () => { getSku(id).oferta = g('oferta').value.trim() || 'A'; renderCosteo(); });
     g('tipo').addEventListener('change', () => { getSku(id).tipo = g('tipo').value; renderAll(); });
     g('precioVenta').addEventListener('change', () => { getSku(id).precioVenta = parseMoneyInput(g('precioVenta').value); renderAll(); });
-    g('aov').addEventListener('change', () => { getSku(id).aov = parseMoneyInput(g('aov').value); renderAll(); });
+    if (g('aov')) g('aov').addEventListener('change', () => { getSku(id).aov = parseMoneyInput(g('aov').value); renderAll(); });
     g('costoProducto').addEventListener('change', () => { getSku(id).costoProducto = parseMoneyInput(g('costoProducto').value); renderAll(); });
     g('fulfillment').addEventListener('change', () => { getSku(id).fulfillment = parseMoneyInput(g('fulfillment').value); renderAll(); });
     g('margenObj').addEventListener('change', () => { getSku(id).margenObj = parseNum(g('margenObj').value); renderAll(); });
