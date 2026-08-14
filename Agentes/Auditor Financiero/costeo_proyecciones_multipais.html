@@ -1062,7 +1062,9 @@ function computeSku(sku, g, costeo) {
  *  Oferta "A", 1.4x en cualquier otra — editable por oferta vía state.ofertaMultiplicadores. */
 function getOfertaMultiplier(oferta) {
     if (state.ofertaMultiplicadores[oferta] !== undefined) return state.ofertaMultiplicadores[oferta];
-    return (oferta || '').trim().toUpperCase() === 'A' ? 2 : 1.4;
+    // Multiplicador = 1 / % Costo objetivo del AOV: Oferta A apunta a 50% de costo,
+    // cualquier otra oferta (p. ej. B) apunta a 70% de costo como máximo.
+    return (oferta || '').trim().toUpperCase() === 'A' ? 2 : 1.43;
 }
 
 function computeCosteo() {
@@ -1464,7 +1466,7 @@ function renderCosteo() {
                     <input type="number" class="oferta-mult-input" data-oferta="${esc(grp.oferta)}" value="${getOfertaMultiplier(grp.oferta)}" step="0.1" min="0">
                 </div>
             </div>
-            <p class="sub-desc" style="margin:-6px 0 14px;">AOV X1 = Costo Total × ${fmtDec(getOfertaMultiplier(grp.oferta),1)} · AOV X2 = AOV X1 × 2 × 0.8 · AOV X3 = AOV X1 × 3 × 0.7</p>
+            <p class="sub-desc" style="margin:-6px 0 14px;">AOV X1 = Costo Total × ${fmtDec(getOfertaMultiplier(grp.oferta),2)} (≈ ${fmtPct1(100/getOfertaMultiplier(grp.oferta))} de costo) · AOV X2 = AOV X1 × 2 × 0.8 · AOV X3 = AOV X1 × 3 × 0.7</p>
             <div class="grid cols-2">${grp.items.map(s => skuCardHTML(s)).join('')}</div>
             ${profitSummaryHTML(grp)}
         </div>
