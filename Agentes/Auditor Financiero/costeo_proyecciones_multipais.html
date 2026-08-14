@@ -791,10 +791,90 @@
             color: #f5c667;
             margin-bottom: 20px;
         }
+
+        /* ── TOOLBAR: guardar / cargar / imprimir ── */
+        .toolbar-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .toolbar-row .field-group {
+            flex: 1 1 220px;
+        }
+
+        .toolbar-row .field-group label {
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .toolbar-row .field-group input {
+            width: 100%;
+        }
+
+        .toolbar-hint {
+            width: 100%;
+            font-size: .78rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .print-header {
+            display: none;
+        }
+
+        /* ── PRINT / PDF ── */
+        @media print {
+            body { background: #fff !important; color: #111 !important; }
+            .page-header, .currency-bar, .tabs, .toolbar-row, .back-link, #btn-add-sku,
+            .sku-remove, .table-toggle summary, .tooltip-box, footer { display: none !important; }
+            .print-header { display: block !important; margin-bottom: 20px; }
+            .print-header .print-brand { color: var(--granate); font-weight: 800; letter-spacing: 2px; font-size: .85rem; text-transform: uppercase; }
+            .print-header h1 { color: #111; font-size: 1.4rem; margin: 4px 0; }
+            .print-header p { color: #555; font-size: .85rem; }
+            .container { max-width: 100%; }
+            .tab-panel { display: none; }
+            body.print-all .tab-panel {
+                display: block !important;
+                page-break-after: always;
+                background: #fff !important;
+                border: none !important;
+                padding: 0 0 20px 0 !important;
+            }
+            body.print-all .tab-panel:last-of-type { page-break-after: auto; }
+            /* Todo el texto a oscuro por defecto; luego re-atenuamos las etiquetas secundarias. */
+            .container * { color: #111 !important; }
+            .kpi-sub, .chart-desc, .sub-desc, .panel-desc, .cop-hint, .lbl,
+            .tip-body p, .def, .ex, .rate-note, .glossary-card .def { color: #555 !important; }
+            .print-header .print-brand { color: var(--granate) !important; }
+            .card, .kpi, .chart-card, .sku-card, .glossary-card, .tip-card,
+            .profit-summary, .offer-group, .sku-stat, .glossary-card { background: #f7f7f7 !important; border: 1px solid #ccc !important; break-inside: avoid; }
+            input, select { background: #fff !important; border: 1px solid #999 !important; }
+            .editable-badge, .auto-value { background: none !important; border: 1px solid #999 !important; }
+            .warn-pill { background: none !important; border: 1px solid #c0392b !important; }
+            details { display: block !important; }
+            svg text, svg .axis-label, svg .bar-label { fill: #111 !important; }
+            table.data-table th, table.data-table td { border-color: #ccc !important; }
+            a { text-decoration: none !important; }
+        }
     </style>
 </head>
 
 <body>
+
+    <div class="print-header">
+        <div class="print-brand">Auditor Financiero — Metodología Ecom</div>
+        <h1>Costeo: <span id="print-product-name"></span></h1>
+        <p>Generado el <span id="print-date"></span></p>
+    </div>
 
     <header class="page-header">
         <div class="container">
@@ -804,6 +884,22 @@
                 proyección mensual, flujo de caja (desfase Dropi COD) y diagnóstico de rentabilidad — con selector de
                 país/moneda que siempre compara contra el Peso Colombiano (COP), la moneda principal.</p>
             <a class="back-link" href="../dashboard_general.html">← Volver al Dashboard</a>
+
+            <div class="toolbar-row">
+                <div class="field-group">
+                    <label for="producto-nombre-input">Nombre del producto (para tus registros)</label>
+                    <input type="text" id="producto-nombre-input" placeholder="Ej: OilShield Guatemala">
+                </div>
+                <button class="btn primary" id="btn-guardar-copia">💾 Guardar copia (.json)</button>
+                <button class="btn" id="btn-cargar-copia">📂 Cargar copia</button>
+                <input type="file" id="file-import" accept="application/json,.json" style="display:none;">
+                <button class="btn" id="btn-exportar-pdf">🖨️ Exportar / Imprimir</button>
+                <button class="btn" id="btn-nuevo-costeo" style="border-color:rgba(224,82,79,.4);color:#ff9b98;">🆕 Nuevo costeo</button>
+                <p class="toolbar-hint">Cada costeo queda en tu navegador solamente hasta que lo guardes. <strong style="color:var(--white);">"Guardar copia"</strong>
+                    descarga un archivo <code>.json</code> con todos los datos de este producto — tu registro permanente. Usa
+                    <strong style="color:var(--white);">"Cargar copia"</strong> para reabrirlo después, o <strong style="color:var(--white);">"Nuevo costeo"</strong>
+                    para reutilizar esta misma plantilla en blanco con otro producto.</p>
+            </div>
         </div>
     </header>
 
@@ -868,6 +964,7 @@ const countryByCode = c => COUNTRIES.find(x => x.code === c);
 /* ============================== ESTADO ============================== */
 function defaultState() {
     return {
+        productoNombre: '',
         country: 'CO',
         rate: 1,
         costeo: {
@@ -1943,8 +2040,82 @@ function renderAll() {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + activeTab));
 }
 
+/* ============================== GUARDAR / CARGAR / IMPRIMIR ============================== */
+function downloadState() {
+    const nombre = (state.productoNombre || 'costeo').trim() || 'costeo';
+    const safeName = nombre.normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'costeo';
+    const fecha = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `costeo_${safeName}_${fecha}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function loadStateFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        let loaded;
+        try {
+            loaded = JSON.parse(ev.target.result);
+        } catch (err) {
+            alert('No se pudo leer el archivo: no es un JSON válido.');
+            return;
+        }
+        if (!loaded || typeof loaded !== 'object' || !Array.isArray(loaded.skus)) {
+            alert('Este archivo no parece ser una copia exportada desde esta herramienta.');
+            return;
+        }
+        state = Object.assign(defaultState(), loaded);
+        document.getElementById('producto-nombre-input').value = state.productoNombre || '';
+        activateTab('costeo');
+        renderAll();
+    };
+    reader.readAsText(file);
+}
+
+function nuevoCosteo() {
+    if (!confirm('¿Empezar un costeo nuevo con la plantilla en blanco?\n\nSi no guardaste una copia (.json) del producto actual, esos datos se perderán.')) return;
+    state = defaultState();
+    document.getElementById('producto-nombre-input').value = '';
+    activateTab('costeo');
+    renderAll();
+}
+
+function prepararEImprimir() {
+    document.getElementById('print-product-name').textContent = state.productoNombre || 'Sin nombre';
+    document.getElementById('print-date').textContent = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.querySelectorAll('details.table-toggle').forEach(d => d.setAttribute('open', ''));
+    document.body.classList.add('print-all');
+    window.print();
+}
+window.addEventListener('afterprint', () => {
+    document.body.classList.remove('print-all');
+    document.querySelectorAll('details.table-toggle[open]').forEach(d => d.removeAttribute('open'));
+});
+
+function initToolbar() {
+    const nombreInput = document.getElementById('producto-nombre-input');
+    nombreInput.value = state.productoNombre || '';
+    nombreInput.addEventListener('change', () => { state.productoNombre = nombreInput.value; });
+    document.getElementById('btn-guardar-copia').addEventListener('click', downloadState);
+    document.getElementById('btn-cargar-copia').addEventListener('click', () => document.getElementById('file-import').click());
+    document.getElementById('file-import').addEventListener('change', (e) => {
+        if (e.target.files[0]) loadStateFromFile(e.target.files[0]);
+        e.target.value = '';
+    });
+    document.getElementById('btn-exportar-pdf').addEventListener('click', prepararEImprimir);
+    document.getElementById('btn-nuevo-costeo').addEventListener('click', nuevoCosteo);
+}
+
 renderTabs();
 activateTab('costeo');
+initToolbar();
 renderAll();
 </script>
 
