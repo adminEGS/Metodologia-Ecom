@@ -1012,17 +1012,19 @@ function groupSkusByOferta(skus) {
 }
 
 /** Para un grupo (oferta), calcula cuánto se gana con cada paquete (x1/x2/x3)
- *  con y sin el upsell del mismo grupo. "Ganancia" = Objetivo Neto $ (el margen
- *  que te queda una vez pagado hasta el CPA objetivo en pauta). */
+ *  con y sin el upsell del mismo grupo. "Ganancia" siempre se calcula sobre el
+ *  Precio Venta real (no el AOV interno): Precio Venta × Margen Objetivo % —
+ *  si cambias el Precio Venta de una tarjeta, esta tabla se recalcula sola. */
 function computeOfferProfitSummary(group) {
     const upsell = group.items.find(s => s.tipo === 'upsell');
     const paquetes = group.items.filter(s => s.tipo === 'x1' || s.tipo === 'x2' || s.tipo === 'x3');
+    const ganancia = s => s.precioVenta * (s.margenObj / 100);
     return paquetes.map(p => ({
         tipo: p.tipo,
         nombre: p.nombre,
-        sinUpsell: p.objetivoNeto,
-        conUpsell: upsell ? p.objetivoNeto + upsell.objetivoNeto : null,
-        upsellGanancia: upsell ? upsell.objetivoNeto : null,
+        sinUpsell: ganancia(p),
+        conUpsell: upsell ? ganancia(p) + ganancia(upsell) : null,
+        upsellGanancia: upsell ? ganancia(upsell) : null,
     }));
 }
 
@@ -1211,7 +1213,7 @@ function profitSummaryHTML(group) {
     return `
     <div class="profit-summary">
         <h4>💵 ¿Cuánto ganas con la Oferta ${esc(group.oferta)}?</h4>
-        <p style="font-size:.78rem;color:var(--text-muted);margin:-6px 0 10px;">"Ganancia" = Objetivo Neto $ — lo que te queda una vez pagado hasta el CPA objetivo en pauta.</p>
+        <p style="font-size:.78rem;color:var(--text-muted);margin:-6px 0 10px;">"Ganancia" = Precio Venta × Margen Objetivo % — se recalcula al cambiar el Precio Venta de cualquier tarjeta.</p>
         <div class="profit-table">
             <div class="profit-row profit-row-head">
                 <div></div>
