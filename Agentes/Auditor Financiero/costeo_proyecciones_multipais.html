@@ -1102,6 +1102,60 @@ function svgEl(tag, attrs) {
 }
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
+/** Gráfico de cascada (waterfall): cada barra parte de "from" y llega a "to".
+ *  type: 'total'/'result' anclan a 0; 'cost' flota sobre la barra anterior. */
+function buildWaterfallSvg(bars, W, H) {
+    const padL = 10, padR = 10, padT = 26, padB = 40;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const allVals = bars.flatMap(b => [b.from, b.to]);
+    let yMin = Math.min(0, ...allVals), yMax = Math.max(0, ...allVals);
+    const yPad = (yMax - yMin) * 0.15 || 1;
+    yMin -= yPad * 0.15; yMax += yPad;
+    const n = bars.length;
+    const slot = plotW / n;
+    const barW = Math.min(70, slot * 0.55);
+    const yFor = v => padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+    const zeroY = yFor(0);
+
+    let svg = `<line x1="${padL}" y1="${zeroY}" x2="${W-padR}" y2="${zeroY}" class="grid-line"></line>`;
+    bars.forEach((b, i) => {
+        const xc = padL + slot * i + slot / 2;
+        const x0 = xc - barW / 2;
+        const goesDown = b.to < b.from;
+        const yTop = yFor(Math.max(b.from, b.to));
+        const yBot = yFor(Math.min(b.from, b.to));
+        const h = Math.max(2, yBot - yTop);
+        let color;
+        if (b.type === 'total') color = 'var(--series-1)';
+        else if (b.type === 'cost') color = 'var(--series-2)';
+        else color = b.to >= 0 ? 'var(--status-good)' : 'var(--status-critical)';
+        svg += `<rect x="${x0}" y="${yTop}" width="${barW}" height="${h}" fill="${color}" rx="4"></rect>`;
+        const labelY = goesDown ? yBot + 14 : yTop - 6;
+        const sign = b.delta < 0 ? '-' : '';
+        svg += `<text x="${xc}" y="${labelY}" text-anchor="middle" font-size="10" fill="var(--white)">${sign}${moneyCompact(Math.abs(b.delta))}</text>`;
+        svg += `<text x="${xc}" y="${padT+plotH+16}" text-anchor="middle" class="axis-label" font-size="9.5">${esc(b.label)}</text>`;
+        if (i < n - 1) {
+            const nextXc = padL + slot * (i + 1) + slot / 2 - barW / 2;
+            svg += `<line x1="${xc+barW/2}" y1="${yFor(b.to)}" x2="${nextXc}" y2="${yFor(b.to)}" stroke="var(--card-border)" stroke-dasharray="2 2"></line>`;
+        }
+    });
+    return svg;
+}
+
+/** Barra horizontal 100% apilada: composición de un total en categorías con color + % + valor. */
+function buildStackedBarSvg(segments, totalW, height) {
+    const total = segments.reduce((a, s) => a + Math.max(0, s.v), 0) || 1;
+    let x0 = 0, svg = '';
+    segments.forEach(s => {
+        if (s.v <= 0) return;
+        const w = (s.v / total) * totalW;
+        if (w > 42) svg += `<text x="${x0 + w/2}" y="${height/2+4}" text-anchor="middle" class="bar-label">${fmtPct1(s.v/total*100)}</text>`;
+        svg += `<rect x="${x0}" y="0" width="${Math.max(0,w-2)}" height="${height}" fill="${s.color}" rx="4"></rect>`;
+        x0 += w;
+    });
+    return svg;
+}
+
 /* ============================== RENDER: COSTEO ============================== */
 function profitSummaryHTML(group) {
     const rows = computeOfferProfitSummary(group);
@@ -1383,22 +1437,23 @@ function renderProyecciones() {
     const p = state.proyecciones;
     const el = document.getElementById('panel-proyecciones');
 
-    const bars = [
-        { label: 'Facturación Bruta', v: proy.facturacionBruta, color: 'var(--series-1)' },
-        { label: 'Facturación Neta', v: proy.facturacionNeta, color: 'var(--series-3)' },
-        { label: 'Costos Logísticos', v: proy.totalCostosLogisticos, color: 'var(--series-2)' },
-        { label: 'Pago Dropi (te giran)', v: proy.pagoDropi, color: 'var(--series-6)' },
+    // Waterfall: de Facturación Neta a Beneficio Neto, paso a paso
+    const wSteps = [
+        { label: 'Facturación Neta', delta: proy.facturacionNeta, type: 'total' },
+        { label: 'Costo Producto', delta: -proy.costoProductoTotal, type: 'cost' },
+        { label: 'Costo Envío', delta: -(proy.costoEnvioEntregados + proy.costoEnvioDevueltos), type: 'cost' },
+        { label: 'Inversión Ads', delta: -p.inversionAds, type: 'cost' },
+        { label: 'Operativos', delta: -p.operativosMensuales, type: 'cost' },
+        { label: 'Beneficio Neto', delta: proy.beneficioNeto, type: 'result' },
     ];
-    const maxV = Math.max(1, ...bars.map(b => b.v));
-    const bw = 500, rh = 40;
-    let barsSvg = '';
-    bars.forEach((b, i) => {
-        const y = i * rh;
-        const w = Math.max(0, (b.v / maxV) * bw);
-        barsSvg += `<text x="0" y="${y+16}" class="axis-label" font-size="11">${b.label}</text>`;
-        barsSvg += `<rect x="180" y="${y+2}" width="${w}" height="20" fill="${b.color}" rx="4"></rect>`;
-        barsSvg += `<text x="${180+w+8}" y="${y+17}" font-size="11" fill="var(--white)">${moneyCompact(b.v)}</text>`;
+    let running = 0;
+    const wBars = wSteps.map(s => {
+        if (s.type === 'total' || s.type === 'result') { running = s.delta; return { ...s, from: 0, to: s.delta }; }
+        const from = running; running += s.delta;
+        return { ...s, from, to: running };
     });
+    const waterfallSvg = buildWaterfallSvg(wBars, 700, 260);
+
     const beneficioColor = proy.beneficioNeto >= 0 ? 'var(--status-good)' : 'var(--status-critical)';
     const beneficioIcon = proy.beneficioNeto >= 0 ? '✅ GANANCIA' : '🚨 PÉRDIDA';
 
@@ -1407,8 +1462,14 @@ function renderProyecciones() {
         <p class="panel-desc">Réplica de la pestaña <em>Proyecciones</em>: a partir de tu inversión en pauta y tu CPA
             objetivo, proyecta ventas, entregas, facturación y beneficio neto del mes.</p>
 
+        <div class="note-banner">✏️ <strong>Editable:</strong> los 8 supuestos de abajo (inversión, ticket, costos,
+            % devoluciones, % CPA objetivo, % cancelaciones). Todo lo demás — KPIs, gráfico y tabla — se recalcula
+            automáticamente.</div>
+
+        <h2 class="sub" style="margin-bottom:10px;">🔧 Supuestos</h2>
         <div class="grid cols-4" id="proy-inputs" style="margin-bottom:24px;"></div>
 
+        <h2 class="sub" style="margin-bottom:10px;">📊 Resultado (automático)</h2>
         <div class="grid cols-4" style="margin-bottom:24px;">
             <div class="kpi ${proy.margenNeto>=0.1?'good':(proy.margenNeto>=0?'warning':'critical')}">
                 <div class="kpi-label">Beneficio Neto / mes</div>
@@ -1433,9 +1494,9 @@ function renderProyecciones() {
         </div>
 
         <div class="chart-card">
-            <h3>Del gasto en ads al beneficio neto</h3>
-            <p class="chart-desc">Comparación de magnitudes: facturación bruta → facturación neta (solo entregados) → costos logísticos → lo que Dropi te gira.</p>
-            <svg viewBox="0 0 700 ${bars.length*rh}" style="width:100%;height:auto;">${barsSvg}</svg>
+            <h3>De la facturación al beneficio neto</h3>
+            <p class="chart-desc">Cascada: cada barra resta (o suma) sobre la anterior, hasta llegar al Beneficio Neto real del mes.</p>
+            <svg viewBox="0 0 700 260" style="width:100%;height:auto;">${waterfallSvg}</svg>
             <div style="margin-top:14px;padding:14px;background:rgba(255,255,255,.03);border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
                 <span style="font-family:'Montserrat',sans-serif;font-weight:700;">Beneficio Neto</span>
                 <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.2rem;color:${beneficioColor};">${money(proy.beneficioNeto)} · ${beneficioIcon}</span>
@@ -1448,7 +1509,7 @@ function renderProyecciones() {
                 <table class="data-table">
                     <thead><tr><th>Concepto</th><th>Total Mes</th><th>Diario</th></tr></thead>
                     <tbody>
-                        <tr><td>Inversión en Anuncios</td><td>${fmtLocalOrCop(proy.ventasEstimadas*proy.cpa)}</td><td>${fmtLocalOrCop(p.inversionAds/30)}</td></tr>
+                        <tr><td>Inversión en Anuncios</td><td>${fmtLocalOrCop(p.inversionAds)}</td><td>${fmtLocalOrCop(p.inversionAds/30)}</td></tr>
                         <tr><td>CPA (Costo por Venta)</td><td>${fmtLocalOrCop(proy.cpa)}</td><td>${fmtLocalOrCop(proy.cpa)}</td></tr>
                         <tr><td>Ventas Estimadas</td><td>${fmtDec(proy.ventasEstimadas,1)}</td><td>${fmtDec(proy.ventasEstimadas/30,1)}</td></tr>
                         <tr><td>Pedidos Cancelados</td><td>${fmtDec(proy.pedidosCancelados,1)}</td><td>${fmtDec(proy.pedidosCancelados/30,1)}</td></tr>
@@ -1497,11 +1558,13 @@ function renderFlujo() {
     const proy = computeProyecciones();
     const flujo = computeFlujo(proy);
     const f = state.flujo;
+    const p = state.proyecciones;
     const el = document.getElementById('panel-flujo');
 
     const W = 760, H = 300, padL = 60, padR = 20, padT = 20, padB = 30;
     const plotW = W - padL - padR, plotH = H - padT - padB;
     const values = flujo.dias.map(d => d.saldoAcumulado);
+    const dataGoesNegative = values.some(v => v < 0);
     let yMin = Math.min(0, ...values), yMax = Math.max(...values, f.saldoInicial);
     const yPad = (yMax - yMin) * 0.08 || 1;
     yMin -= yPad; yMax += yPad;
@@ -1519,7 +1582,12 @@ function renderFlujo() {
             <strong style="color:var(--white)">${f.diasPromedioEntrega} días</strong> después de la entrega. Los operativos se
             pagan el día 30. Este es el riesgo #1 en dropshipping COD: quedarte sin caja antes de que te giren.</p>
 
-        <div class="grid cols-2" style="margin-bottom:24px;">
+        <div class="note-banner">✏️ <strong>Editable aquí:</strong> Saldo Inicial y Días Promedio de Entrega. El
+            resto de los supuestos (gasto diario, ticket, costos, % devoluciones/cancelaciones, CPA) vienen
+            automáticamente de la pestaña <strong style="color:var(--white);">Proyecciones</strong> — cámbialos ahí.</div>
+
+        <h2 class="sub" style="margin-bottom:10px;">🔧 Editable</h2>
+        <div class="grid cols-2" style="margin-bottom:20px;">
             ${inputFieldHTML('flujo-saldo', 'Saldo Inicial (tu capital)', f.saldoInicial, 'money', true)}
             <div class="input-field">
                 <label>Días Promedio de Entrega<span class="editable-badge">editable</span></label>
@@ -1528,6 +1596,21 @@ function renderFlujo() {
             </div>
         </div>
 
+        <details class="table-toggle" style="margin-bottom:20px;">
+            <summary>Ver supuestos automáticos vinculados desde Proyecciones</summary>
+            <div class="grid cols-4" style="margin-top:10px;">
+                <div class="sku-stat"><div class="lbl">Gasto Diario Pauta</div><div class="val">${moneyCompact(flujo.gastoDiario)}</div></div>
+                <div class="sku-stat"><div class="lbl">Ticket Promedio</div><div class="val">${moneyCompact(p.ticketPromedio)}</div></div>
+                <div class="sku-stat"><div class="lbl">CPA</div><div class="val">${moneyCompact(proy.cpa)}</div></div>
+                <div class="sku-stat"><div class="lbl">% Cancelaciones</div><div class="val">${fmtPct1(p.pctCancelaciones)}</div></div>
+                <div class="sku-stat"><div class="lbl">Costo Producto</div><div class="val">${moneyCompact(p.costoProducto)}</div></div>
+                <div class="sku-stat"><div class="lbl">Costo Envío</div><div class="val">${moneyCompact(p.costoEnvio)}</div></div>
+                <div class="sku-stat"><div class="lbl">% Devoluciones</div><div class="val">${fmtPct1(p.pctDevoluciones)}</div></div>
+                <div class="sku-stat"><div class="lbl">Operativos / mes</div><div class="val">${moneyCompact(p.operativosMensuales)}</div></div>
+            </div>
+        </details>
+
+        <h2 class="sub" style="margin-bottom:10px;">📊 Resultado (automático)</h2>
         <div class="grid cols-4" style="margin-bottom:24px;">
             <div class="kpi ${flujo.saldoMinimo>=0?'good':'critical'}">
                 <div class="kpi-label">Saldo Mínimo (punto crítico)</div>
@@ -1553,6 +1636,8 @@ function renderFlujo() {
             <p class="chart-desc">Pasa el mouse sobre la línea para ver el detalle de cada día. La línea punteada en 0 marca el límite: por debajo necesitas capital adicional.</p>
             <div style="position:relative;">
                 <svg id="flujo-svg" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;">
+                    ${dataGoesNegative ? `<rect x="${padL}" y="${zeroY}" width="${plotW}" height="${padT+plotH-zeroY}" fill="var(--status-critical)" opacity="0.08"></rect>
+                    <text x="${padL+6}" y="${padT+plotH-8}" font-size="9" fill="var(--status-critical)" opacity="0.9">⚠ Zona sin caja — necesitas capital adicional</text>` : ''}
                     <line x1="${padL}" y1="${zeroY}" x2="${W-padR}" y2="${zeroY}" stroke="var(--status-critical)" stroke-dasharray="4 4" stroke-width="1"></line>
                     <text x="${W-padR}" y="${zeroY-4}" text-anchor="end" font-size="9" fill="var(--status-critical)">$0</text>
                     <line x1="${day30X}" y1="${padT}" x2="${day30X}" y2="${padT+plotH}" stroke="var(--gold)" stroke-dasharray="3 3" stroke-width="1"></line>
@@ -1621,18 +1706,38 @@ function renderFlujo() {
 function renderResumen() {
     const proy = computeProyecciones();
     const flujo = computeFlujo(proy);
+    const p = state.proyecciones;
     const tips = computeTips();
     const critical = tips.filter(t => t.level === 'critical').slice(0, 2);
     const el = document.getElementById('panel-resumen');
 
+    const compSegs = [
+        { label: 'Costo Producto', v: proy.costoProductoTotal, color: 'var(--series-1)' },
+        { label: 'Costo Envío', v: proy.costoEnvioEntregados + proy.costoEnvioDevueltos, color: 'var(--series-2)' },
+        { label: 'Inversión Ads', v: p.inversionAds, color: 'var(--series-4)' },
+        { label: 'Operativos', v: p.operativosMensuales, color: 'var(--series-5)' },
+        { label: 'Beneficio Neto', v: Math.max(0, proy.beneficioNeto), color: proy.beneficioNeto >= 0 ? 'var(--status-good)' : 'var(--status-critical)' },
+    ];
+    const compBase = proy.facturacionNeta || 1;
+    const compCostTotal = proy.costoProductoTotal + proy.costoEnvioEntregados + proy.costoEnvioDevueltos + p.inversionAds + p.operativosMensuales;
+    let compX0 = 0, compSvg = '';
+    compSegs.forEach(s => {
+        if (s.v <= 0) return;
+        const w = Math.min(700, (s.v / compBase) * 700);
+        if (w > 42) compSvg += `<text x="${compX0 + w/2}" y="26" text-anchor="middle" class="bar-label">${fmtPct1(s.v/compBase*100)}</text>`;
+        compSvg += `<rect x="${compX0}" y="0" width="${Math.max(0,w-2)}" height="44" fill="${s.color}" rx="4"></rect>`;
+        compX0 += w;
+    });
+
     el.innerHTML = `
         <h2 class="panel-title">📊 Momentum — Dashboard Resumen</h2>
-        <p class="panel-desc">Resumen automático de las pestañas Proyecciones y Flujo de Caja — igual que la pestaña <em>Resumen</em> del archivo original.</p>
+        <p class="panel-desc">Todo en esta pestaña es <strong style="color:var(--white);">automático</strong> — un resumen
+            calculado a partir de Proyecciones y Flujo de Caja. Para cambiar algo, edítalo en esas pestañas.</p>
 
         <div class="section-block">
             <h2 class="sub">Rentabilidad</h2>
             <div class="grid cols-4">
-                <div class="kpi"><div class="kpi-label">Inversión Mensual en Ads</div><div class="kpi-value">${moneyCompact(proy.ventasEstimadas*proy.cpa)}</div></div>
+                <div class="kpi"><div class="kpi-label">Inversión Mensual en Ads</div><div class="kpi-value">${moneyCompact(p.inversionAds)}</div></div>
                 <div class="kpi"><div class="kpi-label">Ventas Estimadas / Mes</div><div class="kpi-value">${fmtDec(proy.ventasEstimadas,0)}</div><div class="kpi-sub">pedidos</div></div>
                 <div class="kpi"><div class="kpi-label">Pedidos Entregados</div><div class="kpi-value">${fmtDec(proy.pedidosEntregados,0)}</div><div class="kpi-sub">pedidos</div></div>
                 <div class="kpi"><div class="kpi-label">Facturación Neta</div><div class="kpi-value">${moneyCompact(proy.facturacionNeta)}</div></div>
@@ -1640,6 +1745,15 @@ function renderResumen() {
                 <div class="kpi ${proy.beneficioNeto>=0?'good':'critical'}"><div class="kpi-label">Beneficio Neto</div><div class="kpi-value">${moneyCompact(proy.beneficioNeto)}</div></div>
                 <div class="kpi ${proy.margenNeto>=0.1?'good':(proy.margenNeto>=0?'warning':'critical')}"><div class="kpi-label">Margen Neto</div><div class="kpi-value">${fmtPct1(proy.margenNeto*100)}</div></div>
                 <div class="kpi ${proy.roas>=3?'good':(proy.roas>=2?'warning':'critical')}"><div class="kpi-label">ROAS</div><div class="kpi-value">${fmtRoas(proy.roas)}</div></div>
+            </div>
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>¿A dónde va cada peso de tu Facturación Neta?</h3>
+                <p class="chart-desc">Composición de la facturación neta mensual: producto, envío, pauta, operativos y lo que te queda de beneficio.</p>
+                <svg viewBox="0 0 700 44" style="width:100%;height:auto;">${compSvg}</svg>
+                <div class="legend">
+                    ${compSegs.map(s => `<span><span class="dot" style="background:${s.color}"></span>${s.label}: ${moneyCompact(s.v)} (${fmtPct1(s.v/compBase*100)})</span>`).join('')}
+                </div>
+                ${compCostTotal > compBase ? `<p style="font-size:.78rem;color:var(--status-critical);margin-top:10px;">⚠ Tus costos (${fmtPct1(compCostTotal/compBase*100)} de la facturación neta) superan el 100% — estás operando en pérdida, por eso la barra no alcanza a mostrar beneficio.</p>` : ''}
             </div>
         </div>
 
