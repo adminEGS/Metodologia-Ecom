@@ -1067,8 +1067,9 @@ function getOfertaMultiplier(oferta) {
     return (oferta || '').trim().toUpperCase() === 'A' ? 2 : 1.43;
 }
 
-/** X2 siempre lleva 20% de descuento sobre el X1 calculado (2 unidades × 0.8);
- *  X3 siempre lleva 30% de descuento sobre el X1 calculado (3 unidades × 0.7). */
+/** AOV de X2 siempre lleva 20% de descuento sobre el AOV de X1 (2 unidades × 0.8);
+ *  AOV de X3 siempre lleva 30% de descuento sobre el AOV de X1 (3 unidades × 0.7).
+ *  El Precio Venta queda siempre editable a mano en todos los paquetes de todas las ofertas. */
 const X2_FACTOR = 2 * 0.8; // 1.6 → 20% de descuento por unidad vs. X1
 const X3_FACTOR = 3 * 0.7; // 2.1 → 30% de descuento por unidad vs. X1
 
@@ -1077,30 +1078,26 @@ function computeCosteo() {
     // Paso 1: costos (el Costo Total no depende del AOV, así que este primer paso ya es válido).
     let skus = state.skus.map(s => computeSku(s, g, state.costeo));
 
-    // Paso 2: automatiza el AOV y el Precio Venta de los paquetes x2/x3 a partir del x1 de su oferta.
+    // Paso 2: automatiza el AOV de los paquetes x2/x3 a partir del x1 de su oferta.
     // AOV x1 = Costo Total x1 × multiplicador de la oferta (único valor no derivado de otro paquete).
-    // AOV/Precio Venta x2 = valor de x1 × 2 × 0.8 (20% dto.). x3 = valor de x1 × 3 × 0.7 (30% dto.).
+    // AOV x2 = AOV x1 × 2 × 0.8 (20% dto.). AOV x3 = AOV x1 × 3 × 0.7 (30% dto.).
     const groupsForAov = groupSkusByOferta(skus);
     const aovOverrides = {};
-    const pvOverrides = {};
     groupsForAov.forEach(grp => {
         const x1 = grp.items.find(i => i.tipo === 'x1');
         if (!x1) return;
         const aovX1 = x1.costoTotal * getOfertaMultiplier(grp.oferta);
         aovOverrides[x1.id] = aovX1;
-        const pvX1 = x1.precioVenta;
         const x2 = grp.items.find(i => i.tipo === 'x2');
-        if (x2) { aovOverrides[x2.id] = aovX1 * X2_FACTOR; pvOverrides[x2.id] = pvX1 * X2_FACTOR; }
+        if (x2) aovOverrides[x2.id] = aovX1 * X2_FACTOR;
         const x3 = grp.items.find(i => i.tipo === 'x3');
-        if (x3) { aovOverrides[x3.id] = aovX1 * X3_FACTOR; pvOverrides[x3.id] = pvX1 * X3_FACTOR; }
+        if (x3) aovOverrides[x3.id] = aovX1 * X3_FACTOR;
     });
 
-    // Paso 3: recalcula con el AOV/Precio Venta automáticos (afecta costos, ganancia, CPA, ROAS...).
+    // Paso 3: recalcula con el AOV automático (afecta % costo/AOV, beneficio, CPA, ROAS...).
     skus = state.skus.map(s => {
-        const patch = {};
-        if (aovOverrides[s.id] !== undefined) patch.aov = aovOverrides[s.id];
-        if (pvOverrides[s.id] !== undefined) patch.precioVenta = pvOverrides[s.id];
-        return computeSku(Object.keys(patch).length ? { ...s, ...patch } : s, g, state.costeo);
+        const overrideAov = aovOverrides[s.id];
+        return computeSku(overrideAov !== undefined ? { ...s, aov: overrideAov } : s, g, state.costeo);
     });
     return { g, skus };
 }
@@ -1476,8 +1473,7 @@ function renderCosteo() {
                     <input type="number" class="oferta-mult-input" data-oferta="${esc(grp.oferta)}" value="${getOfertaMultiplier(grp.oferta)}" step="0.1" min="0">
                 </div>
             </div>
-            <p class="sub-desc" style="margin:-6px 0 4px;">AOV X1 = Costo Total × ${fmtDec(getOfertaMultiplier(grp.oferta),2)} (≈ ${fmtPct1(100/getOfertaMultiplier(grp.oferta))} de costo) · AOV X2 = AOV X1 × 2 × 0.8 (20% dto.) · AOV X3 = AOV X1 × 3 × 0.7 (30% dto.)</p>
-            <p class="sub-desc" style="margin:0 0 14px;">Precio Venta X2 = Precio Venta X1 × 2 × 0.8 (20% dto.) · Precio Venta X3 = Precio Venta X1 × 3 × 0.7 (30% dto.) — el Precio Venta de X1 se edita a mano.</p>
+            <p class="sub-desc" style="margin:-6px 0 14px;">AOV X1 = Costo Total × ${fmtDec(getOfertaMultiplier(grp.oferta),2)} (≈ ${fmtPct1(100/getOfertaMultiplier(grp.oferta))} de costo) · AOV X2 = AOV X1 × 2 × 0.8 (20% dto.) · AOV X3 = AOV X1 × 3 × 0.7 (30% dto.). El Precio Venta se edita a mano en todos los paquetes.</p>
             <div class="grid cols-2">${grp.items.map(s => skuCardHTML(s)).join('')}</div>
             ${profitSummaryHTML(grp)}
         </div>
@@ -1549,15 +1545,11 @@ function bindInput(id, handler) {
 function skuCardHTML(s) {
     const esUpsell = s.tipo === 'upsell';
     const aovAuto = s.tipo === 'x1' || s.tipo === 'x2' || s.tipo === 'x3';
-    const pvAuto = s.tipo === 'x2' || s.tipo === 'x3';
     const aovField = aovAuto
         ? `<div class="input-field"><label>AOV <span class="editable-badge" style="background:rgba(243,156,18,.15);color:var(--gold);">auto</span></label>
              <div class="auto-value">${moneyCompact(s.aov)}</div></div>`
         : `<div class="input-field"><label>AOV</label><input type="number" id="sku-${s.id}-aov" value="${inputMoneyValue(s.aov)}" step="any"></div>`;
-    const pvField = pvAuto
-        ? `<div class="input-field"><label>Precio Venta <span class="editable-badge" style="background:rgba(243,156,18,.15);color:var(--gold);">auto</span></label>
-             <div class="auto-value">${moneyCompact(s.precioVenta)}</div></div>`
-        : `<div class="input-field"><label>Precio Venta</label><input type="number" id="sku-${s.id}-precioVenta" value="${inputMoneyValue(s.precioVenta)}" step="any"></div>`;
+    const pvField = `<div class="input-field"><label>Precio Venta</label><input type="number" id="sku-${s.id}-precioVenta" value="${inputMoneyValue(s.precioVenta)}" step="any"></div>`;
     return `
     <div class="sku-card ${esUpsell ? 'upsell' : ''}" data-sku="${s.id}">
         <div class="sku-head">
@@ -1574,7 +1566,6 @@ function skuCardHTML(s) {
         </div>
         ${esUpsell ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🔁 Upsell: sin costo de envío, devolución ni operativo (va en el mismo pedido).</p>` : ''}
         ${aovAuto ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🧮 AOV automático: ${s.tipo==='x1' ? 'Costo Total × multiplicador de la oferta' : `AOV de X1 × ${s.tipo==='x2'?'2 × 0.8 (20% dto.)':'3 × 0.7 (30% dto.)'}`}.</p>` : ''}
-        ${pvAuto ? `<p style="font-size:.72rem;color:var(--text-muted);margin:-8px 0 12px;">🧮 Precio Venta automático: Precio Venta de X1 × ${s.tipo==='x2'?'2 × 0.8 (20% dto.)':'3 × 0.7 (30% dto.)'}.</p>` : ''}
         <div class="sku-row">
             ${pvField}
             ${aovField}
