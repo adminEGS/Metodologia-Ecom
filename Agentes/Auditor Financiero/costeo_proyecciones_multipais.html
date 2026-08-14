@@ -940,10 +940,13 @@ function computeSku(sku, g, costeo) {
     const pctCostoAov = sku.aov ? costoTotal / sku.aov : 0;
     const beneficioCombustible = sku.aov - costoTotal;
     const objetivoNeto = sku.aov * (sku.margenObj / 100);
-    const cpaObjetivo = beneficioCombustible - objetivoNeto;
+    // Un upsell siempre va en el mismo pedido que ya generó su propia venta: no necesita
+    // presupuesto de pauta propio, así que CPA/ROAS/% Pauta no aplican (quedan en 0).
+    const cpaObjetivo = esUpsell ? 0 : (beneficioCombustible - objetivoNeto);
     const roasObjetivo = cpaObjetivo ? sku.aov / cpaObjetivo : 0;
     const pctPauta = sku.aov ? cpaObjetivo / sku.aov : 0;
-    return { ...sku, devoluciones, operativos, envio, costoTotal, pctCostoAov, beneficioCombustible, objetivoNeto, cpaObjetivo, roasObjetivo, pctPauta };
+    const margenInalcanzable = esUpsell ? (beneficioCombustible < objetivoNeto) : (cpaObjetivo <= 0);
+    return { ...sku, devoluciones, operativos, envio, costoTotal, pctCostoAov, beneficioCombustible, objetivoNeto, cpaObjetivo, roasObjetivo, pctPauta, margenInalcanzable };
 }
 
 function computeCosteo() {
@@ -1071,7 +1074,10 @@ function computeTips() {
     }
 
     skus.forEach(s => {
-        if (s.cpaObjetivo <= 0) {
+        if (s.margenInalcanzable && s.tipo === 'upsell') {
+            tips.push({ level: 'critical', icon: '🧮', title: `"${s.nombre}": meta de margen inalcanzable`, text:
+                `El costo del upsell (${fmtPct1(s.pctCostoAov*100)} de su AOV) no deja suficiente beneficio combustible para cubrir el margen objetivo (${fmtPct1(s.margenObj)}). Baja el margen objetivo o reduce el costo del producto del upsell.` });
+        } else if (s.margenInalcanzable) {
             tips.push({ level: 'critical', icon: '🧮', title: `"${s.nombre}": meta de margen inalcanzable`, text:
                 `Los costos (${fmtPct1(s.pctCostoAov*100)} del AOV) más el margen objetivo (${fmtPct1(s.margenObj)}) superan el AOV. No queda presupuesto para pauta. Sube el precio/AOV, baja el margen objetivo o reduce costos fijos.` });
         } else if (s.pctCostoAov > 0.6) {
@@ -1349,7 +1355,7 @@ function renderCosteo() {
             <td>${fmtLocalOrCop(s.envio)}</td><td>${fmtLocalOrCop(s.fulfillment)}</td>
             <td>${fmtLocalOrCop(s.costoTotal)}</td><td>${fmtPct1(s.pctCostoAov*100)}</td>
             <td>${fmtLocalOrCop(s.beneficioCombustible)}</td><td>${fmtPct1(s.margenObj)}</td>
-            <td>${fmtLocalOrCop(s.objetivoNeto)}</td><td class="${s.cpaObjetivo<0?'neg':''}">${fmtLocalOrCop(s.cpaObjetivo)}</td>
+            <td>${fmtLocalOrCop(s.objetivoNeto)}</td><td class="${s.margenInalcanzable?'neg':''}">${fmtLocalOrCop(s.cpaObjetivo)}</td>
             <td>${fmtRoas(s.roasObjetivo)}</td><td>${fmtPct1(s.pctPauta*100)}</td>
         </tr>`).join('')}</tbody>
     `;
@@ -1404,11 +1410,12 @@ function skuCardHTML(s) {
             <div class="sku-stat"><div class="lbl">Costo Total</div><div class="val">${moneyCompact(s.costoTotal)}</div></div>
             <div class="sku-stat"><div class="lbl">% Costo/AOV</div><div class="val">${fmtPct1(s.pctCostoAov*100)}</div></div>
             <div class="sku-stat"><div class="lbl">Beneficio Comb.</div><div class="val">${moneyCompact(s.beneficioCombustible)}</div></div>
-            <div class="sku-stat"><div class="lbl">CPA Objetivo</div><div class="val ${s.cpaObjetivo<0?'neg':''}">${moneyCompact(s.cpaObjetivo)}</div></div>
+            <div class="sku-stat"><div class="lbl">CPA Objetivo</div><div class="val ${s.margenInalcanzable?'neg':''}">${moneyCompact(s.cpaObjetivo)}</div></div>
             <div class="sku-stat"><div class="lbl">ROAS Objetivo</div><div class="val">${fmtRoas(s.roasObjetivo)}</div></div>
             <div class="sku-stat"><div class="lbl">% Pauta</div><div class="val">${fmtPct1(s.pctPauta*100)}</div></div>
         </div>
-        ${s.cpaObjetivo <= 0 ? `<div class="warn-pill">⚠️ Meta de margen inalcanzable con estos costos</div>` : ''}
+        ${esUpsell ? `<p style="font-size:.68rem;color:var(--text-muted);margin:8px 0 0;">CPA/ROAS/% Pauta en 0: el upsell no necesita presupuesto de pauta propio, ya va incluido en la venta que lo generó.</p>` : ''}
+        ${s.margenInalcanzable ? `<div class="warn-pill">⚠️ Meta de margen inalcanzable con estos costos</div>` : ''}
     </div>`;
 }
 
